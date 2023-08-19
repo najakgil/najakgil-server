@@ -1,0 +1,120 @@
+package com.example.developjeans.service;
+
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.PutObjectResult;
+import com.example.developjeans.dto.PhotoCharDto;
+import com.example.developjeans.dto.response.GetPhotoRes;
+import com.example.developjeans.dto.response.SavePhotoRes;
+import com.example.developjeans.entity.Photo;
+import com.example.developjeans.entity.PhotoLike;
+import com.example.developjeans.entity.User;
+import com.example.developjeans.global.config.Response.BaseResponse;
+import com.example.developjeans.global.entity.Status;
+import com.example.developjeans.repository.PhotoLikeRepository;
+import com.example.developjeans.repository.PhotoRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.awt.print.Pageable;
+import java.util.ArrayList;
+import java.util.List;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class PhotoService {
+
+    private final PhotoRepository photoRepository;
+
+    private final PhotoLikeRepository photoLikeRepository;
+    private final AmazonS3 amazonS3;
+
+    @Value("${cloud.aws.s3.bucket}")
+    private String s3BucketUrl; // Amazon S3 버킷의 URL (https://<버킷이름>.s3.<리전>.amazonaws.com)
+
+
+    public SavePhotoRes uploadFile(MultipartFile image) {
+        try {
+            String fileName = image.getOriginalFilename();
+            amazonS3.putObject(new PutObjectRequest("najakgil", fileName, image.getInputStream(), null));
+
+            Photo createdPhoto = createPhoto(fileName);
+            if (createdPhoto != null) {
+                return new SavePhotoRes(createdPhoto.getId());
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            //return "File upload failed: " + e.getMessage();
+            e.printStackTrace();
+            return null;
+        }
+
+
+    }
+
+    
+    @Transactional(readOnly = true)
+    public List<GetPhotoRes> getAllImages() {
+        List<Photo> photoList = photoRepository.findAll();
+        List<GetPhotoRes> getPhotoResList = new ArrayList<>();
+
+        for(Photo photo: photoList){
+            GetPhotoRes getPhotoRes = new GetPhotoRes(photo.getId(), photo.getImgUrl());
+            getPhotoResList.add(getPhotoRes);
+        }
+        return getPhotoResList;
+        //return photoRepository.findAll();
+    }
+
+    public Photo createPhoto(String imgName){
+        String imageUrl = imgName; // 이미지 URL 생성
+        Photo photo = new Photo();
+
+        photo.setUser(User.builder().id(1L).build());
+        photo.setStatus(Status.A);
+        photo.setLikes(0);
+
+        photo.setImgUrl(imageUrl);
+        return photoRepository.save(photo);
+    }
+
+    public String likePhoto(Long photoId, Long userId) throws ChangeSetPersister.NotFoundException {
+        Photo photo = photoRepository.findById(photoId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+
+        User user = User.builder()
+                .id(userId)
+                .build();
+
+        if(photoLikeRepository.existsByPhotoAndUserAndStatus(photo, user, Status.A)) {
+            return "fail";
+        }
+
+        PhotoLike photoLike = PhotoLike
+                .builder()
+                .user(user)
+                .photo(photo)
+                .status(Status.A)
+                .build();
+
+        photoLikeRepository.save(photoLike);
+        photo.setLikes(photo.getLikes() + 1);
+
+        return "success";
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<PhotoCharDto> findBestPhoto(Pageable pageable){
+        Page<Photo> photos = photoRepository
+    }
+
+
+}
