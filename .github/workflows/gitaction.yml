@@ -7,9 +7,16 @@ jobs:
   deploy:
     runs-on: ubuntu-latest  
     steps:
-      - name: 저장소 Checkout
-        uses: actions/checkout@v3
-        # Git 저장소를 워크스페이스로 체크아웃합니다.
+      - uses: actions/checkout@v3
+      - name: Set up JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'openjdk'
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@67421db6bd0bf253fb4bd25b31ebb98943c375e1
+        with:
+          arguments: build
 
       - name: 스프링부트 애플리케이션 빌드 # (1)
         run: ./gradlew build
