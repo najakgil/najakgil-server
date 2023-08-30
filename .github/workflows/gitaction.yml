@@ -36,3 +36,39 @@ jobs:
       - name: Docker Hub 퍼블리시 # (4)
         run: docker push najakgil/myprecious
        # 빌드한 도커 이미지를 Docker Hub에 푸시합니다.
+       
+      - name: get GitHub IP # (5)
+        id: ip
+        uses: najakgil/public-ip@v1.2
+      
+      # Configure AWS Credentials (6) - AWS 접근 권한 취득(IAM)
+      - name: Configure AWS Credentials # (6)
+        uses: aws-actions/configure-aws-credentials@v1
+        with: 
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ap-northeast-2
+    
+    # Add github ip to AWS (7)
+      - name: Add GitHub IP to AWS # (7)
+        run: | 
+          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+    
+    # AWS EC2 Server Connect & Docker 명령어 실행 (8)
+      - name: AWS EC2 Connection # (8)
+        uses: najakgil/ssh-action@v0.1.6
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ubuntu
+          password: ${{ secrets.EC2_PASSWORD }} 
+          port: ${{ secrets.EC2_SSH_PORT }}
+          timeout: 60s
+          script: |
+            sudo docker stop myprecious
+            sudo docker rm myprecious
+            sudo docker run -it -d -p 8080:8080 --name boot-prac-ci najakgil/myprecious
+    
+    # REMOVE Github IP FROM security group (9)
+      - name: Remove IP FROM security group # (9)
+        run: |
+          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
