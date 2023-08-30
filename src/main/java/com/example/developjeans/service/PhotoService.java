@@ -111,10 +111,10 @@ public class PhotoService {
     }
 
 
-    @Transactional(readOnly = true)
+    /*@Transactional(readOnly = true)
     public List<PhotoCharDto> findBestPhoto(Pageable pageable){
         Page<Photo> photos = photoRepository
     }
-
+*/
 
 }
