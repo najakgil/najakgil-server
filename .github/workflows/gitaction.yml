@@ -67,7 +67,7 @@ jobs:
           script: |
             sudo docker stop myprecious
             sudo docker rm myprecious
-            sudo docker run -it -d -p 8080:8080 --name boot-prac-ci najakgil/myprecious
+            sudo docker run -it -d -p 8080:8080 --name myprecious najakgil/myprecious
     
     # REMOVE Github IP FROM security group (9)
       - name: Remove IP FROM security group # (9)
