@@ -1,6 +1,7 @@
 package com.example.developjeans.controller;
 
 import com.example.developjeans.dto.request.SavePhotoReq;
+import com.example.developjeans.dto.response.GetChartRes;
 import com.example.developjeans.dto.response.GetPhotoRes;
 import com.example.developjeans.dto.response.SavePhotoRes;
 import com.example.developjeans.entity.Photo;
@@ -9,8 +10,10 @@ import com.example.developjeans.global.config.Response.BaseResponse;
 import com.example.developjeans.service.PhotoService;
 import com.example.developjeans.service.S3Service;
 import io.swagger.annotations.*;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,10 +24,11 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/photo")
 @Api(tags = "사진")
+@RequiredArgsConstructor
 public class PhotoController {
 
-    @Autowired
-    private PhotoService photoService;
+
+    private final PhotoService photoService;
 
 
     @ApiOperation("사진 저장 API")
@@ -64,7 +68,6 @@ public class PhotoController {
     }
     @ApiOperation("좋아요 API")
     @ApiImplicitParams({
-
             @ApiImplicitParam(name = "photoId", paramType = "path", value = "사진 인덱스", example = "1", dataTypeClass = Long.class)
     })
     @ApiResponses({
@@ -79,6 +82,24 @@ public class PhotoController {
     public BaseResponse<String> postLike(@PathVariable Long photoId, @PathVariable Long userId) throws ChangeSetPersister.NotFoundException {
         return new BaseResponse<>(photoService.likePhoto(photoId, userId));
 
+    }
+
+    @ApiOperation("사진 차트 조회 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "standard", dataTypeClass = String.class, paramType = "query", value = "정렬 조건(likes, createdAt)"),
+            @ApiImplicitParam(name = "page", dataTypeClass = Integer.class, paramType = "query", value = "페이지",example = "0"),
+            @ApiImplicitParam(name = "size", dataTypeClass = Integer.class, paramType = "query", value = "사이즈",example = "20"),
+    })
+    @ApiResponses({
+            @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+            @ApiResponse(code = 2042, message = "정렬 방식이 잘못되었습니다.")
+    })
+    @GetMapping("/chart")
+    public BaseResponse<Page<GetChartRes>> getChartLikes(
+                                                   @RequestParam String standard,
+                                                   @RequestParam int page,
+                                                   @RequestParam int size){
+        return new BaseResponse<>(photoService.getChart(standard, page, size));
     }
 
 
