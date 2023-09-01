@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectResult;
 import com.example.developjeans.dto.PhotoCharDto;
+import com.example.developjeans.dto.response.GetChartRes;
 import com.example.developjeans.dto.response.GetPhotoRes;
 import com.example.developjeans.dto.response.SavePhotoRes;
 import com.example.developjeans.entity.Photo;
@@ -18,11 +19,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.print.Pageable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,10 +113,20 @@ public class PhotoService {
     }
 
 
-    /*@Transactional(readOnly = true)
-    public List<PhotoCharDto> findBestPhoto(Pageable pageable){
-        Page<Photo> photos = photoRepository
+    @Transactional(readOnly = true)
+    public Page<GetChartRes> getChart(String starndard, int page, int size){
+        Pageable pageable = PageRequest.of(page, size);
+        if(starndard.equals("likes")){
+            return photoRepository.findAllByOrderByLikesDesc(pageable);
+        }
+        else if(starndard.equals("createdAt")){
+            return photoRepository.findAllByOrderByCreatedAtDesc(pageable);
+        }
+        else {
+            throw new IllegalArgumentException("Invalid sorting standard. Supported standards are 'likes' and 'createdAt'");
+        }
+
     }
-*/
+
 
 }
