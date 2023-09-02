@@ -14,6 +14,10 @@ jobs:
         with:
           java-version: '17'
           distribution: 'adopt'
+      - name: Build with Gradle
+        uses: gradle/gradle-build-action@v1
+        with:
+          arguments: build
 
       - name: 스프링부트 애플리케이션 빌드 # (1)
         run: ./gradlew build
@@ -63,7 +67,7 @@ jobs:
           script: |
             sudo docker stop myprecious
             sudo docker rm myprecious
-            sudo docker run -it -d -p 8080:8080 --name myprecious najakgil/myprecious
+            sudo docker run -p 8080:8080 najakgil-server
     
     # REMOVE Github IP FROM security group (9)
       - name: Remove IP FROM security group # (9)
