@@ -43,7 +43,7 @@ public class PhotoController {
             @ApiResponse(code = 2005, message = "이미지파일이 아닙니다")
     })
     @PostMapping("/upload")
-    public BaseResponse<SavePhotoRes> uploadFile(@RequestParam("image") MultipartFile image) {
+    public BaseResponse<SavePhotoRes> uploadFile(@RequestPart(value = "image", required = false) MultipartFile image) {
         SavePhotoRes savePhotoRes = photoService.uploadFile(image);
         //String result = photoService.uploadFile(image);
         //model.addAttribute("result", result);
