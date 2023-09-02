@@ -65,9 +65,10 @@ jobs:
           port: ${{ secrets.EC2_SSH_PORT }}
           timeout: 60s
           script: |
+            sudo docker pull najakgil/myprecious
             sudo docker stop myprecious
             sudo docker rm myprecious
-            sudo docker run -p 8080:8080 najakgil-server
+            sudo docker run -it -d -p 8080:8080 --name myprecious najakgil/myprecious
     
     # REMOVE Github IP FROM security group (9)
       - name: Remove IP FROM security group # (9)
