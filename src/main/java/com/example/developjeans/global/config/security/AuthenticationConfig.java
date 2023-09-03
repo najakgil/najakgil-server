@@ -31,7 +31,7 @@
 //                .csrf().disable()
 //                .cors().and()
 //                .authorizeRequests() //request를 authorize 하겠다는 의미
-//                .antMatchers("/api/v1/users/login", "/api/v1/users/join", "/api/v1/photo/upload").permitAll() //Login, join은 언제든지 가능
+//                .antMatchers("/api/v1/users/login", "/api/v1/users/join").permitAll() //Login, join은 언제든지 가능
 //                .antMatchers(HttpMethod.POST, "/api/v1/**").authenticated() //모든 POST 인증 요청
 //                .and()
 //                .sessionManagement()

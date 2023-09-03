@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.PutObjectResult;
 import com.example.developjeans.dto.PhotoCharDto;
 import com.example.developjeans.dto.response.GetChartRes;
 import com.example.developjeans.dto.response.GetPhotoRes;
+import com.example.developjeans.dto.response.PhotoLikeRes;
 import com.example.developjeans.dto.response.SavePhotoRes;
 import com.example.developjeans.entity.Photo;
 import com.example.developjeans.entity.PhotoLike;
@@ -27,6 +28,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
@@ -36,14 +38,18 @@ public class PhotoService {
     private final PhotoRepository photoRepository;
 
     private final PhotoLikeRepository photoLikeRepository;
-    private final AmazonS3 amazonS3;
+    //private final AmazonS3 amazonS3;
 
-    @Value("${cloud.aws.s3.bucket}")
-    private String s3BucketUrl; // Amazon S3 버킷의 URL (https://<버킷이름>.s3.<리전>.amazonaws.com)
+    private final S3Service s3Service;
+
+
+    //@Value("${cloud.aws.s3.bucket}")
+    //private String s3BucketUrl; // Amazon S3 버킷의 URL (https://<버킷이름>.s3.<리전>.amazonaws.com)
 
 
     public SavePhotoRes uploadFile(MultipartFile image) {
         try {
+            /**
             String fileName = image.getOriginalFilename();
             amazonS3.putObject(new PutObjectRequest("najakgil", fileName, image.getInputStream(), null));
 
@@ -52,7 +58,16 @@ public class PhotoService {
                 return new SavePhotoRes(createdPhoto.getId());
             } else {
                 return null;
-            }
+            } */
+
+            String S3Url = s3Service.uploadImage(image);
+            Photo photo = Photo.builder()
+                    .imgUrl(S3Url)
+                    .user(User.builder().id(2L).build())
+                    .status(Status.A)
+                    .likes(0).build();
+            photoRepository.save(photo);
+            return new SavePhotoRes(photo.getId());
         } catch (Exception e) {
             //return "File upload failed: " + e.getMessage();
             e.printStackTrace();
@@ -76,8 +91,10 @@ public class PhotoService {
         //return photoRepository.findAll();
     }
 
+    /**
     public Photo createPhoto(String imgName){
         String imageUrl = imgName; // 이미지 URL 생성
+
         Photo photo = new Photo();
 
         photo.setUser(User.builder().id(1L).build());
@@ -86,18 +103,31 @@ public class PhotoService {
 
         photo.setImgUrl(imageUrl);
         return photoRepository.save(photo);
-    }
+    } */
 
-    public String likePhoto(Long photoId, Long userId) throws ChangeSetPersister.NotFoundException {
+    public PhotoLikeRes likePhoto(Long photoId, Long userId) throws ChangeSetPersister.NotFoundException {
         Photo photo = photoRepository.findById(photoId).orElseThrow(ChangeSetPersister.NotFoundException::new);
 
         User user = User.builder()
                 .id(userId)
                 .build();
 
-        if(photoLikeRepository.existsByPhotoAndUserAndStatus(photo, user, Status.A)) {
-            return "fail";
+        Optional<PhotoLike> optionalLike = photoLikeRepository.findByPhotoAndUser(photo, user);
+        if(optionalLike.isPresent()){
+            PhotoLike photoLike = optionalLike.get();
+            photoLikeRepository.delete(photoLike);
+            photo.setLikes(photo.getLikes() - 1);
+            String message = "좋아요 취소";
+            return new PhotoLikeRes(photoId, photo.getLikes(), message);
         }
+
+        /*
+        if(photoLikeRepository.existsByPhotoAndUserAndStatus(photo, user, Status.A)) {
+            photoLikeRepository.deleteById(photo);
+            photo.setLikes(photo.getLikes() - 1);
+            System.out.println("좋아요가 취소되었습니다.");
+            return new PhotoLikeRes(photoId, photo.getLikes());
+        } */
 
         PhotoLike photoLike = PhotoLike
                 .builder()
@@ -109,7 +139,9 @@ public class PhotoService {
         photoLikeRepository.save(photoLike);
         photo.setLikes(photo.getLikes() + 1);
 
-        return "success";
+        String message = "좋아요";
+        return new PhotoLikeRes(photoId, photo.getLikes(), message);
+
     }
 
 
