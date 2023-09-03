@@ -3,6 +3,7 @@ package com.example.developjeans.controller;
 import com.example.developjeans.dto.request.SavePhotoReq;
 import com.example.developjeans.dto.response.GetChartRes;
 import com.example.developjeans.dto.response.GetPhotoRes;
+import com.example.developjeans.dto.response.PhotoLikeRes;
 import com.example.developjeans.dto.response.SavePhotoRes;
 import com.example.developjeans.entity.Photo;
 import com.example.developjeans.global.config.Response.BaseException;
@@ -22,13 +23,15 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/photo")
+@RequestMapping("/photo")
 @Api(tags = "사진")
 @RequiredArgsConstructor
 public class PhotoController {
 
 
     private final PhotoService photoService;
+
+
 
 
     @ApiOperation("사진 저장 API")
@@ -79,7 +82,7 @@ public class PhotoController {
             @ApiResponse(code = 2007, message = "존재하지 않는 사진입니다.")
     })
     @PostMapping("/like/{photoId}/{userId}")
-    public BaseResponse<String> postLike(@PathVariable Long photoId, @PathVariable Long userId) throws ChangeSetPersister.NotFoundException {
+    public BaseResponse<PhotoLikeRes> postLike(@PathVariable Long photoId, @PathVariable Long userId) throws ChangeSetPersister.NotFoundException {
         return new BaseResponse<>(photoService.likePhoto(photoId, userId));
 
     }
