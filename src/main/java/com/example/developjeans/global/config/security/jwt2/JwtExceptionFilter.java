@@ -1,22 +1,22 @@
-package com.example.developjeans.global.config.security.jwt;
-
-import com.example.developjeans.global.config.Response.BaseResponse;
-import com.example.developjeans.global.config.Response.BaseResponseStatus;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.JwtException;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-//import org.springframework.security.core.Authentication;
+//package com.example.developjeans.global.config.security.jwt2;
+//
+//import com.example.developjeans.global.config.Response.BaseResponse;
+//import com.example.developjeans.global.config.Response.BaseResponseStatus;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//import io.jsonwebtoken.JwtException;
+//import lombok.RequiredArgsConstructor;
+//import lombok.extern.slf4j.Slf4j;
+//
+//import org.springframework.http.HttpStatus;
+//import org.springframework.http.MediaType;
+//import org.springframework.security.authentication.BadCredentialsException;
 //import org.springframework.security.core.AuthenticationException;
-import org.springframework.web.filter.OncePerRequestFilter;
-
-import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+//import org.springframework.web.filter.OncePerRequestFilter;
+//
+//import javax.servlet.FilterChain;
+//import javax.servlet.ServletException;
+//import javax.servlet.http.HttpServletRequest;
+//import javax.servlet.http.HttpServletResponse;
 //import java.io.IOException;
 //import java.util.HashMap;
 //import java.util.Map;
@@ -44,15 +44,15 @@ import javax.servlet.http.HttpServletResponse;
 //        } catch(AuthenticationException e){
 //            log.error(e.getMessage());
 //
-//            /**
+//
 //             // 헤더에 토큰이 비어있거나 잘못된 정보가 기입되었을 경우
-//             if (e.getMessage().equals(Authentication.Empty_Authentication)) {
+//             if (e instanceof BadCredentialsException) {
 //             BaseResponse baseResponse = new BaseResponse(BaseResponseStatus.EMPTY_JWT);
 //
 //             Map<String, Object> errorDetails = setErrorDetails(baseResponse);
 //
 //             sendErrorMessage(response, errorDetails);
-//             } */
+//             }
 //        }
 //    }
 //
@@ -77,4 +77,4 @@ import javax.servlet.http.HttpServletResponse;
 //        objectMapper.writeValue(response.getWriter(), errorDetails);
 //    }
 //}
-
+//

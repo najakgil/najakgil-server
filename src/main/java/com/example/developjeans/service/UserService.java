@@ -1,13 +1,31 @@
 package com.example.developjeans.service;
 
-import com.example.developjeans.global.config.security.jwt.JwtUtil;
-import org.springframework.beans.factory.annotation.Value;
+import com.example.developjeans.dto.JoinDto;
+import com.example.developjeans.dto.KaKaoUserInfo;
+import com.example.developjeans.entity.User;
+//import com.example.developjeans.global.config.security.jwt2.JwtUtil;
+import com.example.developjeans.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
-import javax.validation.Valid;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class UserService {
+
+    private final UserRepository userRepository;
+    //private final JwtUtil jwtUtil;
+
+    public void createUser(KaKaoUserInfo kaKaoUserInfo){
+
+        User user = User.builder()
+                .email(kaKaoUserInfo.getEmail())
+                //.kakaoId(kaKaoUserInfo.getId())
+                .nickName(kaKaoUserInfo.getNickName())
+                .build();
+        userRepository.save(user);
+    }
 
 
 
