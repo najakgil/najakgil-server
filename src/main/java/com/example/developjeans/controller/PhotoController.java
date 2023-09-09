@@ -32,7 +32,7 @@ import static com.example.developjeans.global.config.Response.BaseResponseStatus
 
 @RestController
 @RequestMapping("/photo")
-@Api(tags = "사진")
+@Api(tags = "photo")
 @RequiredArgsConstructor
 public class PhotoController {
 
