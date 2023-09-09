@@ -10,4 +10,5 @@ import lombok.*;
 @Builder
 public class LoginDto {
     private String kakaoToken;
+    private Long user_id;
 }

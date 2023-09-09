@@ -1,13 +1,9 @@
-//package com.example.developjeans.global.config.security.jwt;
+//package com.example.developjeans.global.config.security.jwt2;
 //
-//import com.example.developjeans.service.UserService;
 //import io.jsonwebtoken.JwtException;
 //import lombok.RequiredArgsConstructor;
 //import lombok.extern.slf4j.Slf4j;
-//import org.springframework.beans.factory.annotation.Value;
-//import org.springframework.boot.autoconfigure.web.servlet.WebMvcProperties;
 //import org.springframework.http.HttpHeaders;
-//import org.springframework.http.HttpStatus;
 //import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 //import org.springframework.security.core.authority.SimpleGrantedAuthority;
 //import org.springframework.security.core.context.SecurityContextHolder;
@@ -19,7 +15,6 @@
 //import javax.servlet.http.HttpServletRequest;
 //import javax.servlet.http.HttpServletResponse;
 //import java.io.IOException;
-//import java.time.Duration;
 //import java.util.List;
 //
 //@RequiredArgsConstructor
@@ -34,7 +29,7 @@
 //    //private final UserService userService;
 //
 //
-//    //jwt 문. 이쪽으로 통과함. 여기서 권한 부여
+//    //jwt2 문. 이쪽으로 통과함. 여기서 권한 부여
 //    @Override
 //    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 //
