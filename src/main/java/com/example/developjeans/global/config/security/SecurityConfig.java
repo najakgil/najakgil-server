@@ -48,8 +48,6 @@ public class SecurityConfig {
                 .csrf().disable() // csrf 보안 사용 X
                 .headers().frameOptions().disable()
                 .and()
-                .cors()
-                .and()
 
                 // 세션 사용하지 않으므로 STATELESS로 설정
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -59,8 +57,8 @@ public class SecurityConfig {
                 //== URL별 권한 관리 옵션 ==//
                 .authorizeRequests()
 
+                .antMatchers("/", "/api*", "/api-docs/**", "/v2/api-docs/**","/sign-up", "/swagger-ui/**", "/swagger-resources/**", "/swagger-ui.html", "/webjars/**").permitAll() // 회원가입 접근 가능
                 .antMatchers("/login/**", "/user", "/oauth2/**", "/auth/**").permitAll()
-                .antMatchers("/sign-up", "/swagger-ui/**", "swagger-resources/**", "/swagger-ui.html", "/v2/api-docs", "/webjars/**").permitAll() // 회원가입 접근 가능
                 .anyRequest().authenticated() // 위의 경로 이외에는 모두 인증된 사용자만 접근 가능
                 .and()
                 //== 소셜 로그인 설정 ==//
@@ -83,21 +81,12 @@ public class SecurityConfig {
 
 
 
-    @Bean
-    public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
-        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
-        return jwtAuthenticationFilter;
-    }
+//    @Bean
+//    public JwtAuthenticationProcessingFilter jwtAuthenticationProcessingFilter() {
+//        JwtAuthenticationProcessingFilter jwtAuthenticationFilter = new JwtAuthenticationProcessingFilter(jwtService, userRepository);
+//        return jwtAuthenticationFilter;
+//    }
 
-    @Bean
-    public CorsConfigurationSource corsConfigurationSource() {
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("https://mypreciousgil.netlify.app")); // 허용할 원본 도메인 설정
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE")); // 허용할 HTTP 메서드 설정
-        configuration.setAllowCredentials(true); // 인증 정보를 포함할 것인지 설정
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        source.registerCorsConfiguration("/**", configuration);
-        return source;
-    }
+
 }
 
