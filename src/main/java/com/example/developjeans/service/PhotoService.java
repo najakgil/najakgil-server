@@ -11,7 +11,9 @@ import com.example.developjeans.dto.response.SavePhotoRes;
 import com.example.developjeans.entity.Photo;
 import com.example.developjeans.entity.PhotoLike;
 import com.example.developjeans.entity.User;
+import com.example.developjeans.global.config.Response.BaseException;
 import com.example.developjeans.global.config.Response.BaseResponse;
+import com.example.developjeans.global.config.Response.BaseResponseStatus;
 import com.example.developjeans.global.entity.Status;
 import com.example.developjeans.repository.PhotoLikeRepository;
 import com.example.developjeans.repository.PhotoRepository;
@@ -105,8 +107,8 @@ public class PhotoService {
         return photoRepository.save(photo);
     } */
 
-    public PhotoLikeRes likePhoto(Long photoId, Long userId) throws ChangeSetPersister.NotFoundException {
-        Photo photo = photoRepository.findById(photoId).orElseThrow(ChangeSetPersister.NotFoundException::new);
+    public PhotoLikeRes likePhoto(Long photoId, Long userId) throws BaseException {
+        Photo photo = photoRepository.findById(photoId).orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         User user = User.builder()
                 .id(userId)
@@ -146,7 +148,7 @@ public class PhotoService {
 
 
     @Transactional(readOnly = true)
-    public Page<GetChartRes> getChart(String starndard, int page, int size){
+    public Page<GetChartRes> getChart(String starndard, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         if(starndard.equals("likes")){
             return photoRepository.findAllByOrderByLikesDesc(pageable);

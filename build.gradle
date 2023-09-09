@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
     //Security
-    //implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // Swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
@@ -41,11 +41,12 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 
-    // jwt
+    // jwt2
     implementation(group: 'io.jsonwebtoken', name: 'jjwt-api', version: '0.11.2')
     implementation(group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2')
     implementation(group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2')
     implementation 'javax.xml.bind:jaxb-api:2.3.0'
+    implementation 'com.auth0:java-jwt:4.2.1'
 
     //gson
     implementation 'com.google.code.gson:gson:2.8.7'
@@ -53,6 +54,9 @@ dependencies {
 
     // S3
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.13'
+
+    // oauth2
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     compileOnly 'org.projectlombok:lombok'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

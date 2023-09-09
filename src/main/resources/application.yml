@@ -1,5 +1,18 @@
+#server:
+#  port: 9005
 
 spring:
+  profiles:
+    group:
+      "local" : "local, jwt, oauth"
+    active : local
+
+---
+spring:
+  config:
+    activate:
+      on-profile: "local"
+
   jpa:
     show-sql: true
     properties:
@@ -17,26 +30,6 @@ spring:
     url: jdbc:mysql://database-2.chjxpiygt7p4.ap-northeast-2.rds.amazonaws.com/najakgil?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
     username: najakgil
     password: devgil0819
-  security:
-    oauth2:
-      client:
-        registration:
-          kakao:
-            client-id: 4529dc914c04437070f4893983eba10f
-            client-secret: giNSIEAIHN4fzhkXK5SFHH3VhJMEwe1v
-            scope:
-              - account_email
-              - profile_nickname
-            authorization-grant-type: authorization_code
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
-            client-name: Kakao
-            client-authentication-method: POST
-        provider:
-          kakao:
-            authorization-uri: https://kauth.kakao.com/oauth/authorize
-            token-uri: https://kauth.kakao.com/oauth/token
-            user-info-uri: https://kapi.kakao.com/v2/user/me
-            user-name-attribute: id
 
   sql:
     init:
@@ -59,6 +52,13 @@ cloud:
 
 jwt:
   secret: "Tz2mze7c52RlnOnnhObQaKJijW9bD1lY3xBISlh1J7y6BmXN27qf6RfHSmFeJcL9weOOseaJGDyL9CTMaSAcDg=="
+  access:
+    #expiration: 300000 #5분 (5 * 60) * 1000
+    expiration: 864000000 #10일 (60 * 60 * 24 * 10) * 1000
+    header: "X-AUTH-TOKEN"
+  refresh:
+    expiration: 864000000 #10일 (60 * 60 * 24 * 10) * 1000
+    header: "X-REFRESH-TOKEN"
 
 
 

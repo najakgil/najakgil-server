@@ -9,12 +9,18 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @Slf4j
-@RequestMapping("/api/v1/users")
+//@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
     @Autowired
     private UserService userService;
+
+
+    @GetMapping("/jwt-test")
+    public String jwtTest() {
+        return "jwtTest 요청 성공";
+    }
 
 
 
