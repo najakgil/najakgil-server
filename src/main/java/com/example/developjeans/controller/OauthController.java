@@ -38,7 +38,7 @@ public class OauthController {
     @GetMapping("/login")
     public String login() {
 
-        return "redirect:/photo/upload";
+        return "로그인 성공!";
     }
 
 
