@@ -44,7 +44,8 @@ public class PhotoController {
 
     @ApiOperation("사진 저장 API")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "image", dataTypeClass = Integer.class, paramType = "formData", value = "image")
+            @ApiImplicitParam(name = "image", dataTypeClass = Integer.class, paramType = "formData", value = "image"),
+            @ApiImplicitParam(name = "Authorization", paramType = "header", value = "서비스 자체 jwt 토큰", dataTypeClass = String.class)
     })
     @ApiResponses({
             @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
@@ -80,7 +81,7 @@ public class PhotoController {
 
     @ApiOperation("사진 조회 API")
     @ApiImplicitParams({
-
+            @ApiImplicitParam(name = "Authorization", paramType = "header", value = "서비스 자체 jwt 토큰", dataTypeClass = String.class)
     })
     @ApiResponses({
             @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
@@ -114,7 +115,8 @@ public class PhotoController {
     }
     @ApiOperation("좋아요 API")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "photoId", paramType = "path", value = "사진 인덱스", example = "1", dataTypeClass = Long.class)
+            @ApiImplicitParam(name = "photoId", paramType = "path", value = "사진 인덱스", example = "1", dataTypeClass = Long.class),
+            @ApiImplicitParam(name = "Authorization", paramType = "header", value = "서비스 자체 jwt 토큰", dataTypeClass = String.class)
     })
     @ApiResponses({
             @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
@@ -146,6 +148,7 @@ public class PhotoController {
             @ApiImplicitParam(name = "standard", dataTypeClass = String.class, paramType = "query", value = "정렬 조건(likes, createdAt)"),
             @ApiImplicitParam(name = "page", dataTypeClass = Integer.class, paramType = "query", value = "페이지",example = "0"),
             @ApiImplicitParam(name = "size", dataTypeClass = Integer.class, paramType = "query", value = "사이즈",example = "20"),
+            @ApiImplicitParam(name = "Authorization", paramType = "header", value = "서비스 자체 jwt 토큰", dataTypeClass = String.class)
     })
     @ApiResponses({
             @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
