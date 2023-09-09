@@ -14,6 +14,7 @@ import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @Configuration
+@EnableSwagger2
 public class SwaggerConfig {
 
     @Bean
@@ -26,6 +27,7 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo());
     }
 
+    @Bean
     public ApiInfo apiInfo(){
         return new ApiInfoBuilder()
                 .title("Dev-gilyeo")
