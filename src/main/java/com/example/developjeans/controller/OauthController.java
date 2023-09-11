@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/redirect")
+//@RequestMapping("/redirect")
 @RequiredArgsConstructor
 @Slf4j
 public class OauthController {
@@ -30,7 +30,7 @@ public class OauthController {
 
     //private final AuthenticationManagerBuilder authenticationManagerBuilder;
 
-    @GetMapping("/oauth2/sign-up")
+    @GetMapping("/redirect/oauth2/sign-up")
     public String redirectSignUp(){
         return "회원가입 성공!";
     }

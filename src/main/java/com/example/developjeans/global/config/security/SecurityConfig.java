@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .formLogin().disable() // FormLogin 사용 X
                 .httpBasic().disable() // httpBasic 사용 X
                 .csrf().disable() // csrf 보안 사용 X
+                .cors()
                 .headers().frameOptions().disable()
                 .and()
 
