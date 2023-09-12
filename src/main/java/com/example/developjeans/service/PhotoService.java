@@ -17,6 +17,7 @@ import com.example.developjeans.global.config.Response.BaseResponseStatus;
 import com.example.developjeans.global.entity.Status;
 import com.example.developjeans.repository.PhotoLikeRepository;
 import com.example.developjeans.repository.PhotoRepository;
+import com.example.developjeans.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -40,6 +42,8 @@ public class PhotoService {
     private final PhotoRepository photoRepository;
 
     private final PhotoLikeRepository photoLikeRepository;
+
+    private final UserRepository userRepository;
     //private final AmazonS3 amazonS3;
 
     private final S3Service s3Service;
@@ -49,7 +53,10 @@ public class PhotoService {
     //private String s3BucketUrl; // Amazon S3 버킷의 URL (https://<버킷이름>.s3.<리전>.amazonaws.com)
 
 
-    public SavePhotoRes uploadFile(MultipartFile image) {
+    public SavePhotoRes uploadFile(MultipartFile image, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+
         try {
             /**
             String fileName = image.getOriginalFilename();
@@ -65,7 +72,7 @@ public class PhotoService {
             String S3Url = s3Service.uploadImage(image);
             Photo photo = Photo.builder()
                     .imgUrl(S3Url)
-                    .user(User.builder().id(2L).build())
+                    .user(user)
                     .status(Status.A)
                     .likes(0).build();
             photoRepository.save(photo);
@@ -81,8 +88,8 @@ public class PhotoService {
 
     
     @Transactional(readOnly = true)
-    public List<GetPhotoRes> getAllImages() {
-        List<Photo> photoList = photoRepository.findAll();
+    public List<GetPhotoRes> getAllImages(Long userId) {
+        List<Photo> photoList = photoRepository.findByUserId(userId);
         List<GetPhotoRes> getPhotoResList = new ArrayList<>();
 
         for(Photo photo: photoList){
