@@ -5,7 +5,6 @@ import lombok.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Builder
 public class KaKaoUserInfo {
     private Long id;

@@ -26,35 +26,24 @@ public class User extends BaseEntity {
     private Long id;
 
     @Column(name = "kakao_id")
-    private String kakaoId;
+    private Long kakaoId;
     private String email;
     private String nickName;
     private String password; // 비밀번호
 
-    @Enumerated(EnumType.STRING)
-    private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    @Enumerated(EnumType.STRING)
-    private Role role;
 
-    //private String image;
-    private String refreshToken;
 
     @OneToMany(mappedBy = "user")
     private List<Photo> photoList = new ArrayList<>();
 
-    // 유저 권한 설정 메소드
-    public void authorizeUser() {
-        this.role = Role.USER;
-    }
+
 
     // 비밀번호 암호화 메소드
     public void passwordEncode(PasswordEncoder passwordEncoder) {
         this.password = passwordEncoder.encode(this.password);
     }
 
-    public void updateRefreshToken(String updateRefreshToken) {
-        this.refreshToken = updateRefreshToken;
-    }
+
 
 }

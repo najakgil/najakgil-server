@@ -5,6 +5,7 @@ package com.example.developjeans.service;
 import com.example.developjeans.dto.KaKaoUserInfo;
 import com.example.developjeans.global.config.Response.BaseException;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +24,7 @@ public class OauthService {
 
     public String getKakaoAccessToken(String code) {
 
-        String accessToken = "";
+        String access_token = "";
         String reqURL = "https://kauth.kakao.com/oauth/token";
 
         try {
@@ -40,8 +41,8 @@ public class OauthService {
             BufferedWriter bw = new BufferedWriter((new OutputStreamWriter(conn.getOutputStream())));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id={code}");
-            sb.append("&redirect_uri=http://localhost:8080/login/oauth2/code/kakao");
+            sb.append("&client_id=ff5e8301eb86997e0e6c5bb9d24e92f2");
+            sb.append("&redirect_uri=https://mypreciousgil.netlify.app/redirect");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
@@ -59,7 +60,7 @@ public class OauthService {
             // json parsing
             JSONParser parser = new JSONParser();
             JSONObject elem = (JSONObject) parser.parse(result.toString());
-            String access_token = elem.get("access_token").toString();
+            access_token = elem.get("access_token").toString();
             String refresh_token = elem.get("refresh_token").toString();
             System.out.println("refresh_token = " + refresh_token);
             System.out.println("access_token = " + access_token);
@@ -69,7 +70,7 @@ public class OauthService {
             e.printStackTrace();
         }
 
-        return accessToken;
+        return access_token;
     }
 
     public KaKaoUserInfo getKaKaoUserInfo(String token){
@@ -100,10 +101,23 @@ public class OauthService {
 
             //Gson 라이브러리로 JSON파싱
             JsonElement element = JsonParser.parseString(result.toString());
+            JsonObject jsonObject = element.getAsJsonObject();
+
+            // id 처리
+            JsonElement idElement = jsonObject.get("id");
+            kaKaoUserInfo.setId(idElement != null && !idElement.isJsonNull() ? idElement.getAsLong() : 0L);
+
+            // nickName 처리
+            JsonElement nickNameElement = jsonObject.get("nickName");
+            kaKaoUserInfo.setNickName(nickNameElement != null && !nickNameElement.isJsonNull() ? nickNameElement.getAsString() : "");
+
+            // email 처리
+            JsonElement emailElement = jsonObject.get("email");
+            kaKaoUserInfo.setEmail(emailElement != null && !emailElement.isJsonNull() ? emailElement.getAsString() : "");
             //dto에 저장하기
-            kaKaoUserInfo.setId(element.getAsJsonObject().get("id").getAsLong());
-            kaKaoUserInfo.setNickName(element.getAsJsonObject().get("nickName").getAsString());
-            kaKaoUserInfo.setEmail(element.getAsJsonObject().get("email").getAsString());
+//            kaKaoUserInfo.setId(element.getAsJsonObject().get("id").getAsLong());
+//            kaKaoUserInfo.setNickName(element.getAsJsonObject().get("nickName").getAsString());
+//            kaKaoUserInfo.setEmail(element.getAsJsonObject().get("email").getAsString());
 
             log.info(kaKaoUserInfo.toString());
         } catch (IOException e) {
