@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.ui.Model;
@@ -56,16 +57,17 @@ public class PhotoController {
     })
     @PostMapping("/upload/{userId}")
     public BaseResponse<SavePhotoRes> uploadFile(@PathVariable Long userId, @RequestPart(value = "image", required = false) MultipartFile image) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = (User)principal;
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        String user = principal.getName();
 
-        Long id = Long.parseLong(user.getUsername());
+        Long id = Long.parseLong(user);
+
         try{
             if (!id.equals(userId)) {
                 return new BaseResponse<>(INVALID_JWT);
             }
 
-            SavePhotoRes savePhotoRes = photoService.uploadFile(image);
+            SavePhotoRes savePhotoRes = photoService.uploadFile(image, userId);
 
             return new BaseResponse<>(savePhotoRes);
 
@@ -92,16 +94,23 @@ public class PhotoController {
     })
     @GetMapping("/{userId}")
     public BaseResponse<List<GetPhotoRes>> getAllPhoto(@PathVariable Long userId){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = (User)principal;
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        String user = principal.getName();
 
-        Long id = Long.parseLong(user.getUsername());
+        if (user == null || user.isEmpty()) {
+            // 사용자 이름이 null 또는 빈 문자열이면 처리할 수 없으므로 예외 처리 또는 오류 응답을 반환.
+            return new BaseResponse<>(INVALID_JWT);
+        }
+
+
         try{
+            Long id = Long.parseLong(user);
+
             if (!id.equals(userId)) {
                 return new BaseResponse<>(INVALID_JWT);
             }
 
-            List<GetPhotoRes> photoList = photoService.getAllImages();
+            List<GetPhotoRes> photoList = photoService.getAllImages(userId);
             return new BaseResponse<>(photoList);
 
         } catch (Exception e){
@@ -128,10 +137,11 @@ public class PhotoController {
     })
     @PostMapping("/like/{photoId}/{userId}")
     public BaseResponse<PhotoLikeRes> postLike(@PathVariable Long photoId, @PathVariable Long userId) {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = (User)principal;
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        String user = principal.getName();
 
-        Long id = Long.parseLong(user.getUsername());
+        Long id = Long.parseLong(user);
+
         try{
             if (!id.equals(userId)) {
                 return new BaseResponse<>(INVALID_JWT);
@@ -163,10 +173,10 @@ public class PhotoController {
                                                    @RequestParam Long userId,
                                                    @RequestParam int page,
                                                    @RequestParam int size){
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        User user = (User)principal;
+        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+        String user = principal.getName();
 
-        Long id = Long.parseLong(user.getUsername());
+        Long id = Long.parseLong(user);
 
         if (!id.equals(userId)) {
             return new BaseResponse<>(INVALID_JWT);

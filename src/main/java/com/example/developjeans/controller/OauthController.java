@@ -1,14 +1,18 @@
 package com.example.developjeans.controller;
 
+import com.example.developjeans.dto.JoinDto;
 import com.example.developjeans.dto.KaKaoUserInfo;
 import com.example.developjeans.dto.LoginDto;
 import com.example.developjeans.dto.TokenDto;
+import com.example.developjeans.dto.response.LoginDtoRes;
 import com.example.developjeans.entity.User;
+import com.example.developjeans.global.config.Response.BaseException;
 import com.example.developjeans.global.config.Response.BaseResponse;
-import com.example.developjeans.global.config.security.jwt.service.JwtService;
+import com.example.developjeans.global.config.Response.BaseResponseStatus;
 import com.example.developjeans.repository.UserRepository;
 import com.example.developjeans.service.OauthService;
 import com.example.developjeans.service.UserService;
+import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -20,26 +24,102 @@ import java.io.IOException;
 @RestController
 //@RequestMapping("/redirect")
 @RequiredArgsConstructor
+//@RequestMapping("/users")
+@Api(tags = "Oauth 유저")
 @Slf4j
 public class OauthController {
 
     private final OauthService oauthService;
     private final UserService userService;
     private final UserRepository userRepository;
-    private final JwtService jwtService;
+    //private final JwtService jwtService;
 
-    //private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    //@ResponseBody
+    @ApiOperation("카카오 로그인/회원가입 API")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "code", dataTypeClass = String.class, paramType = "query", value = "카카오 인가 코드")
+    })
+    @ApiResponses({
+            @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
+            @ApiResponse(code = 2050, message = "유효하지 않은 코드입니다.")
+    })
+    @GetMapping("/api/oauth/kakao")
+    public BaseResponse<? extends Object> kakaoCallback(@RequestParam String code)  {
+        log.info("code : " + code);
+        String accessToken = oauthService.getKakaoAccessToken(code);
 
-    @GetMapping("/redirect/oauth2/sign-up")
-    public String redirectSignUp(){
-        return "회원가입 성공!";
+        // 카카오 사용자 정보를 가져온다.
+        KaKaoUserInfo kaKaoUserInfo = oauthService.getKaKaoUserInfo(accessToken);
+
+        // 카카오 사용자의 고유 ID를 기반으로 데이터베이스에서 회원 정보를 확인
+        User existingUser = userRepository.findByKakaoId(kaKaoUserInfo.getId());
+
+        if (existingUser != null) {
+            // 이미 가입한 사용자인 경우, 로그인 처리를 수행.
+            Long userId = existingUser.getId();
+            String jwt = userService.getUserJwt(userId);
+            // 클라이언트에게 JWT 토큰 및 사용자 ID를 반환
+            return new BaseResponse<>(new LoginDtoRes(jwt, userId));
+        } else {
+            // 미가입 사용자인 경우, 회원가입 프로세스를 진행합니다.
+            JoinDto joinDto = new JoinDto();
+            joinDto.setKakaoToken(accessToken); // Kakao API로부터 받은 코드를 사용
+
+            try {
+                userService.createUser(kaKaoUserInfo, joinDto);
+                // 회원가입 성공 시 클라이언트에게 성공 응답을 반환합니다.
+                BaseResponse<String> response = new BaseResponse<>("회원가입 성공");
+                return response;
+            }
+            catch (Exception e) {
+                // 회원가입 실패 시 에러 응답을 반환합니다.
+                BaseResponse<String> response = new BaseResponse<>(e.getMessage());
+                return response;
+            }
+        }
     }
 
-    @GetMapping("/login")
-    public String login() {
 
-        return "로그인 성공!";
-    }
+//    @ResponseBody
+//    @GetMapping("/api/oauth/kakao")
+//    public void kakaoCalllback(@RequestParam String code) {
+//        log.info("code : " + code);
+//        oauthService.getKakaoAccessToken(code);
+//
+//    }
+
+//    @PostMapping("/sign-up")
+//    public BaseResponse<String> kakaoSignUp(@RequestBody JoinDto joinDto) throws BaseException {
+//        KaKaoUserInfo kaKaoUserInfo = oauthService.getKaKaoUserInfo(joinDto.getKakaoToken());
+//        if(userRepository.existsByKakaoId(kaKaoUserInfo.getId())){
+//            return new BaseResponse<>(BaseResponseStatus.POST_USERS_EXISTS_EMAIL);
+//        }
+//        userService.createUser(kaKaoUserInfo, joinDto);
+//        return new BaseResponse<>("회원가입 성공");
+//    }
+//
+//    @PostMapping("/login")
+//    public BaseResponse<LoginDtoRes> kakaoLogin(@RequestBody LoginDto loginDto){
+//        KaKaoUserInfo kaKaoUserInfo = oauthService.getKaKaoUserInfo(loginDto.getKakaoToken());
+//        if(!userRepository.existsByKakaoId(kaKaoUserInfo.getId())){
+//            return new BaseResponse<>(BaseResponseStatus.POST_USERS_NO_EXISTS_USER);
+//        }
+//
+//        Long id = userRepository.findByKakaoId(kaKaoUserInfo.getId()).getId();
+//        String jwt = userService.getUserJwt(id);
+//        return new BaseResponse<>(new LoginDtoRes(jwt, id));
+//    }
+
+//    @GetMapping("/redirect/oauth2/sign-up")
+//    public String redirectSignUp(){
+//        return "회원가입 성공!";
+//    }
+//
+//    @GetMapping("/login")
+//    public String login() {
+//
+//        return "로그인 성공!";
+//    }
 
 
     //@GetMapping("/login")
