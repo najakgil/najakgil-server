@@ -23,7 +23,7 @@ public class UserService {
     private final UserRepository userRepository;
     
     @Transactional
-    public void createUser(KaKaoUserInfo kaKaoUserInfo, JoinDto joinDto){
+    public Long createUser(KaKaoUserInfo kaKaoUserInfo, JoinDto joinDto){
 
         User user = User.builder()
                 .email(kaKaoUserInfo.getEmail())
@@ -31,6 +31,8 @@ public class UserService {
                 .nickName(kaKaoUserInfo.getNickName())
                 .build();
         userRepository.save(user);
+
+        return user.getId();
     }
 
     public String getUserJwt(Long userId){

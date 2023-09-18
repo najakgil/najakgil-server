@@ -1,4 +1,4 @@
-package com.example.developjeans.dto;
+package com.example.developjeans.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class TokenDto {
-    private Long userId;
+public class JoinDtoRes {
     private String jwt;
+    private Long userId;
+    private String message;
 }
