@@ -2,39 +2,29 @@ package com.example.developjeans.controller;
 
 import com.example.developjeans.dto.JoinDto;
 import com.example.developjeans.dto.KaKaoUserInfo;
-import com.example.developjeans.dto.LoginDto;
-import com.example.developjeans.dto.TokenDto;
+import com.example.developjeans.dto.response.JoinDtoRes;
 import com.example.developjeans.dto.response.LoginDtoRes;
 import com.example.developjeans.entity.User;
-import com.example.developjeans.global.config.Response.BaseException;
 import com.example.developjeans.global.config.Response.BaseResponse;
-import com.example.developjeans.global.config.Response.BaseResponseStatus;
 import com.example.developjeans.repository.UserRepository;
 import com.example.developjeans.service.OauthService;
 import com.example.developjeans.service.UserService;
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
-
 @RestController
-//@RequestMapping("/redirect")
 @RequiredArgsConstructor
-//@RequestMapping("/users")
-@Api(tags = "Oauth 유저")
+@Api(tags = "Oauth2.0")
 @Slf4j
 public class OauthController {
 
     private final OauthService oauthService;
     private final UserService userService;
     private final UserRepository userRepository;
-    //private final JwtService jwtService;
 
-    //@ResponseBody
+
     @ApiOperation("카카오 로그인/회원가입 API")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "code", dataTypeClass = String.class, paramType = "query", value = "카카오 인가 코드")
@@ -59,22 +49,20 @@ public class OauthController {
             Long userId = existingUser.getId();
             String jwt = userService.getUserJwt(userId);
             // 클라이언트에게 JWT 토큰 및 사용자 ID를 반환
-            return new BaseResponse<>(new LoginDtoRes(jwt, userId));
+            return new BaseResponse<>(new LoginDtoRes(jwt, userId, "로그인 성공!"));
         } else {
-            // 미가입 사용자인 경우, 회원가입 프로세스를 진행합니다.
+            // 신규 사용자인 경우, 회원가입 진행
             JoinDto joinDto = new JoinDto();
             joinDto.setKakaoToken(accessToken); // Kakao API로부터 받은 코드를 사용
 
             try {
-                userService.createUser(kaKaoUserInfo, joinDto);
-                // 회원가입 성공 시 클라이언트에게 성공 응답을 반환합니다.
-                BaseResponse<String> response = new BaseResponse<>("회원가입 성공");
-                return response;
+                // 회원가입 성공 시 클라이언트에게 jwt랑 USER_ID 반환.
+                return new BaseResponse<String>("회원가입 성공!");
             }
             catch (Exception e) {
-                // 회원가입 실패 시 에러 응답을 반환합니다.
-                BaseResponse<String> response = new BaseResponse<>(e.getMessage());
-                return response;
+                // 회원가입 실패 시 에러 응답을 반환
+                return new BaseResponse<>(e.getMessage());
+
             }
         }
     }

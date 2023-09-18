@@ -12,4 +12,5 @@ import lombok.Setter;
 public class LoginDtoRes {
     private String jwt;
     private Long userId;
+    private String message;
 }
