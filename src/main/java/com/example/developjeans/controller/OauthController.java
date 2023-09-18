@@ -56,6 +56,7 @@ public class OauthController {
             joinDto.setKakaoToken(accessToken); // Kakao API로부터 받은 코드를 사용
 
             try {
+                userService.createUser(kaKaoUserInfo, joinDto);
                 // 회원가입 성공 시 클라이언트에게 jwt랑 USER_ID 반환.
                 return new BaseResponse<String>("회원가입 성공!");
             }
