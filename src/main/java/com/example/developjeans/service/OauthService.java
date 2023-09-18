@@ -42,7 +42,7 @@ public class OauthService {
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
             sb.append("&client_id=ff5e8301eb86997e0e6c5bb9d24e92f2");
-            sb.append("&redirect_uri=https://mypreciousgil.netlify.app/redirect");
+            sb.append("&redirect_uri=http://localhost:5173/redirect");
             sb.append("&code=" + code);
             bw.write(sb.toString());
             bw.flush();
