@@ -157,30 +157,29 @@ public class PhotoController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "standard", dataTypeClass = String.class, paramType = "query", value = "정렬 조건(likes, createdAt)"),
             @ApiImplicitParam(name = "page", dataTypeClass = Integer.class, paramType = "query", value = "페이지",example = "0"),
-            @ApiImplicitParam(name = "size", dataTypeClass = Integer.class, paramType = "query", value = "사이즈",example = "20"),
-            @ApiImplicitParam(name = "Authorization", paramType = "header", value = "서비스 자체 jwt 토큰", dataTypeClass = String.class)
+            @ApiImplicitParam(name = "size", dataTypeClass = Integer.class, paramType = "query", value = "사이즈",example = "20")
+            //@ApiImplicitParam(name = "Authorization", paramType = "header", value = "서비스 자체 jwt 토큰", dataTypeClass = String.class)
     })
     @ApiResponses({
             @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
-            @ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
-            @ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
-            @ApiResponse(code = 2004, message = "존재하지 않는 유저입니다."),
+            //@ApiResponse(code = 2001, message = "JWT를 입력해주세요."),
+            //@ApiResponse(code = 2002, message = "유효하지 않은 JWT입니다."),
+            //@ApiResponse(code = 2004, message = "존재하지 않는 유저입니다."),
             @ApiResponse(code = 2042, message = "정렬 방식이 잘못되었습니다.")
     })
     @GetMapping("/chart")
     public BaseResponse<Page<GetChartRes>> getChartLikes(
                                                    @RequestParam String standard,
-                                                   @RequestParam Long userId,
                                                    @RequestParam int page,
                                                    @RequestParam int size){
-        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
-        String user = principal.getName();
-
-        Long id = Long.parseLong(user);
-
-        if (!id.equals(userId)) {
-            return new BaseResponse<>(INVALID_JWT);
-        }
+//        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
+//        String user = principal.getName();
+//
+//        Long id = Long.parseLong(user);
+//
+//        if (!id.equals(userId)) {
+//            return new BaseResponse<>(INVALID_JWT);
+//        }
 
         return new BaseResponse<>(photoService.getChart(standard, page, size));
 

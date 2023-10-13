@@ -3,7 +3,10 @@ package com.example.developjeans.service;
 import com.example.developjeans.dto.JoinDto;
 import com.example.developjeans.dto.KaKaoUserInfo;
 import com.example.developjeans.entity.User;
+import com.example.developjeans.global.config.Response.BaseException;
+import com.example.developjeans.global.config.Response.BaseResponseStatus;
 import com.example.developjeans.global.config.security.jwt2.JwtUtil;
+import com.example.developjeans.global.entity.Status;
 import com.example.developjeans.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,6 +32,7 @@ public class UserService {
                 .email(kaKaoUserInfo.getEmail())
                 .kakaoId(kaKaoUserInfo.getId())
                 .nickName(kaKaoUserInfo.getNickName())
+                .status(Status.A)
                 .build();
         userRepository.save(user);
 
@@ -38,6 +42,16 @@ public class UserService {
     public String getUserJwt(Long userId){
         String jwt = JwtUtil.createdAccessToken(userId, secretKey);
         return jwt;
+    }
+
+    @Transactional
+    public void deleteUser(Long userId) throws BaseException {
+
+        if(userRepository.existsByIdAndStatus(userId, Status.A)){
+            userRepository.deleteById(userId);
+        } else{
+            throw new BaseException(BaseResponseStatus.POST_USERS_NO_EXISTS_USER);
+        }
     }
 
 

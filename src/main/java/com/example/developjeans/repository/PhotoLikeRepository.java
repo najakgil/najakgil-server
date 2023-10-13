@@ -14,4 +14,6 @@ public interface PhotoLikeRepository extends JpaRepository<PhotoLike, Long> {
     Optional<PhotoLike> findByPhotoAndUser(Photo photo, User user);
 
     boolean existsByPhotoAndUserAndStatus(Photo photo, User user, Status status);
+
+
 }

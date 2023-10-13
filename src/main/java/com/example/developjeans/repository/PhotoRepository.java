@@ -31,4 +31,5 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     Page<GetChartRes> findAllByOrderByCreatedAtDesc(Pageable pageable);
 
 
+    void deleteAllByUserId(Long userId);
 }
