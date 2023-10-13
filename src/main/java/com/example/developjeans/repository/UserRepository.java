@@ -2,6 +2,7 @@ package com.example.developjeans.repository;
 
 import com.example.developjeans.entity.User;
 import com.example.developjeans.global.entity.SocialType;
+import com.example.developjeans.global.entity.Status;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
@@ -17,6 +18,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
     User findByKakaoId(Long kakaoId);
     //Optional<User> findBySocialTypeAndKakaoId(SocialType socialType, String kakaoId);
     //Optional<User> findByRefreshToken(String refreshToken);
-    
 
+    boolean existsByIdAndStatus(Long userId, Status status);
+
+
+
+    @Override
+    void deleteById(Long aLong);
 }
