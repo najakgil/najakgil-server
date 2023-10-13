@@ -34,7 +34,7 @@ public class AuthenticationConfig {
                 .csrf().disable()
                 .cors().and()
                 .authorizeRequests() //request를 authorize 하겠다는 의미
-                .antMatchers("/oauth2/authorization/kakao", "/login/**", "/user", "/sign-up", "/oauth2/**", "/api/oauth/kakao").permitAll() //Login, join은 언제든지 가능
+                .antMatchers("/oauth2/authorization/kakao", "/login/**", "/user", "/sign-up", "/oauth2/**", "/api/oauth/kakao", "photo/chart").permitAll() //Login, join은 언제든지 가능
                 .antMatchers(HttpMethod.POST, "/**").authenticated() //모든 POST 인증 요청
                 .and()
                 .sessionManagement()

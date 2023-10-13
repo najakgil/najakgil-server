@@ -3,6 +3,7 @@ package com.example.developjeans.entity;
 import com.example.developjeans.global.entity.BaseEntity;
 import com.example.developjeans.global.entity.Role;
 import com.example.developjeans.global.entity.SocialType;
+import com.example.developjeans.global.entity.Status;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,10 +32,11 @@ public class User extends BaseEntity {
     private String nickName;
     private String password; // 비밀번호
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
 
-
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
     private List<Photo> photoList = new ArrayList<>();
 
 

@@ -34,7 +34,7 @@ public class OauthController {
             @ApiResponse(code = 2050, message = "유효하지 않은 코드입니다.")
     })
     @GetMapping("/api/oauth/kakao")
-    public BaseResponse<? extends Object> kakaoCallback(@RequestParam String code)  {
+    public BaseResponse<?> kakaoCallback(@RequestParam String code)  {
         log.info("code : " + code);
         String accessToken = oauthService.getKakaoAccessToken(code);
 
@@ -67,6 +67,8 @@ public class OauthController {
             }
         }
     }
+
+
 
 
 //    @ResponseBody
