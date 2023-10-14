@@ -1,0 +1,3 @@
+[submodule "najakgil-private"]
+	path = najakgil-private
+	url = https://github.com/najakgil/najakgil-private.git
