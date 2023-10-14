@@ -9,6 +9,9 @@ jobs:
         
     steps:
       - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+          token: ${{ secrets.ACTION_TOKEN }}
       - name: Set up JDK 17
         uses: actions/setup-java@v3
         with:
@@ -24,7 +27,7 @@ jobs:
         # 스프링 부트 애플리케이션을 빌드합니다.
 
       - name: 도커 이미지 빌드 # (2)
-        run: docker build -t najakgil/myprecious .
+        run: docker build -t ${{ secrets.DOCKERHUB_REPO }}/myprecious .
         # 스프링 부트 애플리케이션의 도커 이미지를 빌드합니다.
        
       - name: Docker Hub 로그인 # (3)
@@ -35,42 +38,22 @@ jobs:
         # Docker Hub에 로그인합니다.
 
       - name: Docker Hub 퍼블리시 # (4)
-        run: docker push najakgil/myprecious
-       # 빌드한 도커 이미지를 Docker Hub에 푸시합니다.
-       
-      - name: get GitHub IP # (5)
-        id: ip
-        uses: haythem/public-ip@v1.2
-      
-      # Configure AWS Credentials (6) - AWS 접근 권한 취득(IAM)
-      - name: Configure AWS Credentials # (6)
-        uses: aws-actions/configure-aws-credentials@v1
-        with: 
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
-    
-    # Add github ip to AWS (7)
-      - name: Add GitHub IP to AWS # (7)
-        run: | 
-          aws ec2 authorize-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
-    
-    # AWS EC2 Server Connect & Docker 명령어 실행 (8)
-      - name: AWS EC2 Connection # (8)
-        uses: appleboy/ssh-action@v0.1.6
+        run: docker push ${{ secrets.DOCKERHUB_REPO }}/myprecious
+        # 빌드한 도커 이미지를 Docker Hub에 푸시합니다.
+
+        #EC2에 로그인해 docker image pull & run : https://github.com/appleboy/ssh-action
+      - name: EC2 login and docker image pull and run
+        uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.EC2_HOST }}
-          username: ubuntu
-          password: ${{ secrets.EC2_PASSWORD }} 
+          username: ${{ secrets.EC2_USERNAME }}
+          password: ${{ secrets.EC2_PASSWORD }}
           port: ${{ secrets.EC2_SSH_PORT }}
-          timeout: 60s
           script: |
-            sudo docker pull najakgil/myprecious
-            sudo docker stop myprecious
-            sudo docker rm myprecious
-            sudo docker run -it -d -p 8080:8080 --name myprecious najakgil/myprecious
-    
-    # REMOVE Github IP FROM security group (9)
-      - name: Remove IP FROM security group # (9)
-        run: |
-          aws ec2 revoke-security-group-ingress --group-id ${{ secrets.AWS_SG_ID }} --protocol tcp --port 22 --cidr ${{ steps.ip.outputs.ipv4 }}/32
+            sudo docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_PASSWORD }}
+            sudo docker stop $(sudo docker ps -a -q)
+            sudo docker rm -f $(sudo docker ps -a -q)
+            sudo docker pull ${{ secrets.DOCKERHUB_REPO }}/myprecious
+            sudo docker run -d -p 9000:8080 ${{ secrets.DOCKERHUB_REPO }}/myprecious
+            sudo docker image prune -f
+            ps -ef | grep java
