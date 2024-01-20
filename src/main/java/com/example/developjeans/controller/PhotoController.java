@@ -12,8 +12,11 @@ import com.example.developjeans.global.config.Response.BaseResponse;
 import com.example.developjeans.global.config.Response.BaseResponseStatus;
 import com.example.developjeans.service.PhotoService;
 import com.example.developjeans.service.S3Service;
+
+
 import io.swagger.annotations.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
@@ -33,15 +36,13 @@ import static com.example.developjeans.global.config.Response.BaseResponseStatus
 
 @RestController
 @RequestMapping("/photo")
+@Slf4j
 @Api(tags = "photo")
 @RequiredArgsConstructor
 public class PhotoController {
 
 
     private final PhotoService photoService;
-
-
-
 
     @ApiOperation("사진 저장 API")
     @ApiImplicitParams({
@@ -55,8 +56,8 @@ public class PhotoController {
             @ApiResponse(code = 2004, message = "존재하지 않는 유저입니다."),
             @ApiResponse(code = 2005, message = "이미지파일이 아닙니다")
     })
-    @PostMapping("/upload/{userId}")
-    public BaseResponse<SavePhotoRes> uploadFile(@PathVariable Long userId, @RequestPart(value = "image", required = false) MultipartFile image) {
+    @PostMapping("/upload")
+    public BaseResponse<SavePhotoRes> uploadFile(@RequestParam("userId") Long userId, @RequestPart(value = "image", required = false) MultipartFile image) {
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
         String user = principal.getName();
 
@@ -122,7 +123,8 @@ public class PhotoController {
 
 
     }
-    @ApiOperation("좋아요 API")
+
+    @ApiOperation("사진 좋아요 API")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "photoId", paramType = "path", value = "사진 인덱스", example = "1", dataTypeClass = Long.class),
             @ApiImplicitParam(name = "Authorization", paramType = "header", value = "서비스 자체 jwt 토큰", dataTypeClass = String.class)
@@ -153,7 +155,7 @@ public class PhotoController {
 
     }
 
-    @ApiOperation("사진 차트 조회 API")
+    @ApiOperation("사진 차트 API")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "standard", dataTypeClass = String.class, paramType = "query", value = "정렬 조건(likes, createdAt)"),
             @ApiImplicitParam(name = "page", dataTypeClass = Integer.class, paramType = "query", value = "페이지",example = "0"),
@@ -172,18 +174,15 @@ public class PhotoController {
                                                    @RequestParam String standard,
                                                    @RequestParam int page,
                                                    @RequestParam int size){
-//        Authentication principal = SecurityContextHolder.getContext().getAuthentication();
-//        String user = principal.getName();
-//
-//        Long id = Long.parseLong(user);
-//
-//        if (!id.equals(userId)) {
-//            return new BaseResponse<>(INVALID_JWT);
-//        }
 
         return new BaseResponse<>(photoService.getChart(standard, page, size));
 
     }
+
+    /**
+     * 카테고리별 캐릭터 사진 반환 api
+     */
+
 
 
 

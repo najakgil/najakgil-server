@@ -21,7 +21,7 @@ public class UserService {
     @Value("${jwt.secret}")
     private String secretKey;
     
-    private Long expiredMs = 1000 * 60 * 60l;
+    private final Long expiredMs = 1000 * 60 * 60l;
 
     private final UserRepository userRepository;
     

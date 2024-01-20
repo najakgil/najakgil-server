@@ -1,6 +1,7 @@
 package com.example.developjeans.global.config.security.jwt2;
 
 import io.jsonwebtoken.JwtException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpHeaders;
@@ -9,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.web.filter.OncePerRequestFilter;
+
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

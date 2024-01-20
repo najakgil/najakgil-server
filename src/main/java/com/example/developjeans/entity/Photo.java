@@ -2,13 +2,15 @@ package com.example.developjeans.entity;
 
 import com.example.developjeans.global.entity.BaseEntity;
 import com.example.developjeans.global.entity.Status;
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+
 
 import javax.persistence.*;
 
 import static com.example.developjeans.global.entity.Status.D;
-import static javax.persistence.GenerationType.IDENTITY;
+
 
 @Entity
 @Getter
@@ -19,7 +21,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @AllArgsConstructor
 public class Photo extends BaseEntity {
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
 

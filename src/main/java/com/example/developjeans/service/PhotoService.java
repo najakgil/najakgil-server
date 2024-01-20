@@ -1,8 +1,6 @@
 package com.example.developjeans.service;
 
-import com.amazonaws.services.s3.AmazonS3;
-import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.amazonaws.services.s3.model.PutObjectResult;
+
 import com.example.developjeans.dto.PhotoCharDto;
 import com.example.developjeans.dto.response.GetChartRes;
 import com.example.developjeans.dto.response.GetPhotoRes;
@@ -18,6 +16,7 @@ import com.example.developjeans.global.entity.Status;
 import com.example.developjeans.repository.PhotoLikeRepository;
 import com.example.developjeans.repository.PhotoRepository;
 import com.example.developjeans.repository.UserRepository;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,6 +27,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
 
 import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
