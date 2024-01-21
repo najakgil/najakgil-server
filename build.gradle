@@ -41,8 +41,7 @@ dependencies {
 
     // DB
     runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java:'
-    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    runtimeOnly 'com.mysql:mysql-connector-j'
 
 
     // jwt2
