@@ -2,17 +2,12 @@ package com.example.developjeans.controller;
 
 import com.example.developjeans.dto.JoinDto;
 import com.example.developjeans.dto.KaKaoUserInfo;
-import com.example.developjeans.dto.response.JoinDtoRes;
 import com.example.developjeans.dto.response.LoginDtoRes;
 import com.example.developjeans.entity.User;
-import com.example.developjeans.global.config.Response.BaseResponse;
+import com.example.developjeans.global.config.response.BaseResponse;
 import com.example.developjeans.repository.UserRepository;
 import com.example.developjeans.service.OauthService;
 import com.example.developjeans.service.UserService;
-//import io.swagger.annotations.*;
-
-
-import io.swagger.annotations.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-//@Tag(name = "카카오 로그인", description = "카카오 인가코드를 이용한 로그인/회원가입 기능")
-@Api(tags = "카카오 로그인")
+@Tag(name = "kakao", description = "카카오 로그인/회원가입")
 @Slf4j
 public class OauthController {
 
@@ -31,15 +25,7 @@ public class OauthController {
     private final UserRepository userRepository;
 
 
-    @ApiOperation("카카오 로그인/회원가입 API")
-    @ApiImplicitParams({
-            @ApiImplicitParam(name = "code", dataTypeClass = String.class, paramType = "query", value = "카카오 인가 코드")
-    })
-    @ApiResponses({
-            @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
-            @ApiResponse(code = 2050, message = "유효하지 않은 코드입니다.")
-    })
-    //@Operation(summary = "카카오를 통한 회원 정보 추출", description = "카카오 로그인 페이지")
+    @Operation(summary = "카카오 로그인하기", description = "카카오 인가코드 활용")
     @GetMapping("/api/v1/kakao")
     public BaseResponse<?> kakaoCallback(@RequestParam String code)  {
         log.info("code : " + code);

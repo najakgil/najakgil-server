@@ -6,6 +6,7 @@ import com.example.developjeans.global.entity.SocialType;
 import com.example.developjeans.global.entity.Status;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +14,6 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 

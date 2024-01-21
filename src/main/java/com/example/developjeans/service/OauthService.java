@@ -3,7 +3,6 @@ package com.example.developjeans.service;
 
 
 import com.example.developjeans.dto.KaKaoUserInfo;
-import com.example.developjeans.global.config.Response.BaseException;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

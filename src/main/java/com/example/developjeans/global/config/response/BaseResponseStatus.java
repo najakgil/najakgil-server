@@ -1,4 +1,4 @@
-package com.example.developjeans.global.config.Response;
+package com.example.developjeans.global.config.response;
 
 import lombok.Getter;
 
@@ -20,6 +20,7 @@ public enum BaseResponseStatus {
 
     NOT_ALLOW_METHOD(false, 405, "잘못된 메소드입니다."),
     INTERNAL_SERVER_ERROR(false, 500, "서버에러 입니다."),
+
     /**
      * 2000 : Request 오류
      */
@@ -31,17 +32,16 @@ public enum BaseResponseStatus {
     INVALID_USER(false, 2004, "존재하지 않는 유저입니다."),
     INVALID_IMAGE_FILE(false, 2005, "이미지파일이 아닙니다."),
     INVALID_KAKAO_TOKEN(false, 2006, "유효한 카카오토큰이 아닙니다."),
-    INVALID_PHOTO(false, 2007, "존재하지 않는 유저입니다."),
+    INVALID_PHOTO(false, 2007, "유효하지 않은 사진 파일 형식입니다."),
 
 
-    // POST_USERS_INVAlID_GENDER(false, 2020, "성별을 확인해주세요."),
-    // POST_USERS_INVAlID_AGE(false, 2021, "나이를 확인해주세요."),
-    POST_USERS_INVALID_EMAIL(false, 2022, "이메일 형식을 확인해주세요."),
-    POST_USERS_EXISTS_EMAIL(false, 2030, "중복된 이메일입니다."),
-    POST_USERS_EXISTS_NICKNAME(false, 2031, "중복된 닉네임입니다."),
-    POST_USERS_NO_EXISTS_EMAIL(false, 2032, "존재하지 않는 이메일입니다."),
-    POST_USERS_EXISTS(false, 2033, "이미 가입된 회원입니다."),
-    POST_USERS_NO_EXISTS_USER(false, 2034, "존재하지 않는 회원입니다."),
+
+    POST_USERS_INVALID_EMAIL(false, 2008, "이메일 형식을 확인해주세요."),
+    POST_USERS_EXISTS_EMAIL(false, 2009, "중복된 이메일입니다."),
+    POST_USERS_EXISTS_NICKNAME(false, 2010, "중복된 닉네임입니다."),
+    POST_USERS_NO_EXISTS_EMAIL(false, 2011, "존재하지 않는 이메일입니다."),
+    POST_USERS_EXISTS(false, 2012, "이미 가입된 회원입니다."),
+    POST_USERS_NO_EXISTS_USER(false, 2013, "존재하지 않는 회원입니다."),
 
 
 
@@ -65,15 +65,11 @@ public enum BaseResponseStatus {
      * 4000 : Database, Server 오류
      */
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
-    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
+    SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다.");
 
-    //[PATCH] /users/{userIdx}
-    MODIFY_FAIL_USERNAME(false, 4014, "유저네임 수정 실패"),
 
-    PASSWORD_ENCRYPTION_ERROR(false, 4011, "비밀번호 암호화에 실패하였습니다."),
-    PASSWORD_DECRYPTION_ERROR(false, 4012, "비밀번호 복호화에 실패하였습니다.");
-    // 5000 : 필요시 만들어서 쓰세요
-    // 6000 : 필요시 만들어서 쓰세요
+    // 5000 : 필요시 만들기
+
 
 
     private final boolean isSuccess;
