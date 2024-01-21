@@ -2,15 +2,17 @@ package com.example.developjeans.entity;
 
 import com.example.developjeans.global.entity.BaseEntity;
 import com.example.developjeans.global.entity.Status;
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
+
 import javax.persistence.*;
 
 import static com.example.developjeans.global.entity.Status.A;
-import static javax.persistence.GenerationType.IDENTITY;
+
 
 @Entity
 @Getter
@@ -22,7 +24,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class PhotoLike extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -4,26 +4,32 @@ import com.example.developjeans.global.entity.BaseEntity;
 import com.example.developjeans.global.entity.Role;
 import com.example.developjeans.global.entity.SocialType;
 import com.example.developjeans.global.entity.Status;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import static javax.persistence.GenerationType.IDENTITY;
+
 
 @Entity
+//@Table(name = "\"USER\"")
 @Getter
+@Setter
 @NoArgsConstructor
 @SuperBuilder
 public class User extends BaseEntity {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(name = "kakao_id")
@@ -37,7 +43,10 @@ public class User extends BaseEntity {
 
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.REMOVE)
+    @JsonBackReference
     private List<Photo> photoList = new ArrayList<>();
+
+    private String refreshToken;
 
 
 

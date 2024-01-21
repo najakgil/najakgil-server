@@ -9,14 +9,20 @@ import com.example.developjeans.global.config.Response.BaseResponse;
 import com.example.developjeans.repository.UserRepository;
 import com.example.developjeans.service.OauthService;
 import com.example.developjeans.service.UserService;
+//import io.swagger.annotations.*;
+
+
 import io.swagger.annotations.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@Api(tags = "Oauth2.0")
+//@Tag(name = "카카오 로그인", description = "카카오 인가코드를 이용한 로그인/회원가입 기능")
+@Api(tags = "카카오 로그인")
 @Slf4j
 public class OauthController {
 
@@ -33,7 +39,8 @@ public class OauthController {
             @ApiResponse(code = 1000, message = "요청에 성공하였습니다."),
             @ApiResponse(code = 2050, message = "유효하지 않은 코드입니다.")
     })
-    @GetMapping("/api/oauth/kakao")
+    //@Operation(summary = "카카오를 통한 회원 정보 추출", description = "카카오 로그인 페이지")
+    @GetMapping("/api/v1/kakao")
     public BaseResponse<?> kakaoCallback(@RequestParam String code)  {
         log.info("code : " + code);
         String accessToken = oauthService.getKakaoAccessToken(code);

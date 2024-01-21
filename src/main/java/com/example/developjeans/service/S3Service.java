@@ -65,6 +65,18 @@ public class S3Service {
         //이미지 주소 리턴
         return amazonS3.getUrl(bucket, fileName).toString();
     }
+
+    public String getImage(String bucket, String fileName){
+        return amazonS3.getUrl(bucket, fileName).toString();
+    }
+
+    public void deleteImage(File file){
+        if (file.delete()) {
+            log.info("파일이 삭제되었습니다.");
+        } else {
+            log.info("파일이 삭제되지 않았습니다.");
+        }
+    }
 }
 /*
 @Service
