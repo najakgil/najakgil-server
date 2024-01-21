@@ -18,7 +18,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -35,7 +35,6 @@ jwt:
   refresh:
     expiration: 864000000 #10일 (60 * 60 * 24 * 10) * 1000
     header: "X-REFRESH-TOKEN"
-
 
 cloud:
   aws:

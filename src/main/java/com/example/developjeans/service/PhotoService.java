@@ -2,6 +2,7 @@ package com.example.developjeans.service;
 
 
 import com.example.developjeans.dto.PhotoCharDto;
+import com.example.developjeans.dto.PhotoDto;
 import com.example.developjeans.dto.response.GetChartRes;
 import com.example.developjeans.dto.response.GetPhotoRes;
 import com.example.developjeans.dto.response.PhotoLikeRes;
@@ -13,6 +14,7 @@ import com.example.developjeans.global.config.Response.BaseException;
 import com.example.developjeans.global.config.Response.BaseResponse;
 import com.example.developjeans.global.config.Response.BaseResponseStatus;
 import com.example.developjeans.global.entity.Status;
+import com.example.developjeans.mapper.PhotoMapper;
 import com.example.developjeans.repository.PhotoLikeRepository;
 import com.example.developjeans.repository.PhotoRepository;
 import com.example.developjeans.repository.UserRepository;
@@ -48,14 +50,16 @@ public class PhotoService {
 
     private final S3Service s3Service;
 
+    private final PhotoMapper photoMapper;
+
 
     //@Value("${cloud.aws.s3.bucket}")
     //private String s3BucketUrl; // Amazon S3 버킷의 URL (https://<버킷이름>.s3.<리전>.amazonaws.com)
 
 
-    public SavePhotoRes uploadFile(MultipartFile image, Long userId) {
+    public Long uploadFile(MultipartFile image, Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found with ID: " + userId));
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 유저 ID: " + userId));
 
         try {
             /**
@@ -76,7 +80,9 @@ public class PhotoService {
                     .status(Status.A)
                     .likes(0).build();
             photoRepository.save(photo);
-            return new SavePhotoRes(photo.getId());
+
+//            return new SavePhotoRes(photo.getId());
+            return photoMapper.toResponseDto(photo).getId();
         } catch (Exception e) {
             //return "File upload failed: " + e.getMessage();
             e.printStackTrace();
@@ -88,13 +94,15 @@ public class PhotoService {
 
     
     @Transactional(readOnly = true)
-    public List<GetPhotoRes> getAllImages(Long userId) {
+    public List<PhotoDto.PhotoResponseDto> getAllImages(Long userId) {
         List<Photo> photoList = photoRepository.findByUserId(userId);
-        List<GetPhotoRes> getPhotoResList = new ArrayList<>();
+        List<PhotoDto.PhotoResponseDto> getPhotoResList = new ArrayList<>();
 
         for(Photo photo: photoList){
-            GetPhotoRes getPhotoRes = new GetPhotoRes(photo.getId(), photo.getImgUrl());
-            getPhotoResList.add(getPhotoRes);
+            PhotoDto.PhotoResponseDto photoGetDto = photoMapper.toResponseDto(photo);
+            getPhotoResList.add(photoGetDto);
+//            GetPhotoRes getPhotoRes = new GetPhotoRes(photo.getId(), photo.getImgUrl());
+//            getPhotoResList.add(getPhotoRes);
         }
         return getPhotoResList;
         //return photoRepository.findAll();
@@ -114,7 +122,7 @@ public class PhotoService {
         return photoRepository.save(photo);
     } */
 
-    public PhotoLikeRes likePhoto(Long photoId, Long userId) throws BaseException {
+    public PhotoDto.PhotoLikeDto likePhoto(Long photoId, Long userId) throws BaseException {
         Photo photo = photoRepository.findById(photoId).orElseThrow(() -> new BaseException(BaseResponseStatus.INVALID_USER));
 
         User user = User.builder()
@@ -127,7 +135,9 @@ public class PhotoService {
             photoLikeRepository.delete(photoLike);
             photo.setLikes(photo.getLikes() - 1);
             String message = "좋아요 취소";
-            return new PhotoLikeRes(photoId, photo.getLikes(), message);
+//            return new PhotoLikeRes(photoId, photo.getLikes(), message);
+            PhotoDto.PhotoResponseDto photoResponseDto = photoMapper.toResponseDto(photo);
+            return new PhotoDto.PhotoLikeDto(photoResponseDto.getId(), photoResponseDto.getLikes(), message);
         }
 
         /*
@@ -149,7 +159,9 @@ public class PhotoService {
         photo.setLikes(photo.getLikes() + 1);
 
         String message = "좋아요";
-        return new PhotoLikeRes(photoId, photo.getLikes(), message);
+        PhotoDto.PhotoResponseDto photoResponseDto = photoMapper.toResponseDto(photo);
+        return new PhotoDto.PhotoLikeDto(photoResponseDto.getId(), photoResponseDto.getLikes(), message);
+//        return new PhotoLikeRes(photoId, photo.getLikes(), message);
 
     }
 

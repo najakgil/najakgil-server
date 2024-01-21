@@ -35,7 +35,7 @@ import static com.example.developjeans.global.config.Response.BaseResponseStatus
 import static com.example.developjeans.global.config.Response.BaseResponseStatus.INVALID_JWT;
 
 @RestController
-@RequestMapping("/photo")
+@RequestMapping("/api/v1/photo")
 @Slf4j
 @Api(tags = "photo")
 @RequiredArgsConstructor
@@ -57,7 +57,7 @@ public class PhotoController {
             @ApiResponse(code = 2005, message = "이미지파일이 아닙니다")
     })
     @PostMapping("/upload")
-    public BaseResponse<SavePhotoRes> uploadFile(@RequestParam("userId") Long userId, @RequestPart(value = "image", required = false) MultipartFile image) {
+    public BaseResponse<?> uploadFile(@RequestParam("userId") Long userId, @RequestPart(value = "image", required = false) MultipartFile image) {
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
         String user = principal.getName();
 
@@ -68,9 +68,9 @@ public class PhotoController {
                 return new BaseResponse<>(INVALID_JWT);
             }
 
-            SavePhotoRes savePhotoRes = photoService.uploadFile(image, userId);
+//            SavePhotoRes savePhotoRes = photoService.uploadFile(image, userId);
 
-            return new BaseResponse<>(savePhotoRes);
+            return new BaseResponse<>("photoId: " + photoService.uploadFile(image, userId));
 
 
 
@@ -94,7 +94,7 @@ public class PhotoController {
             @ApiResponse(code = 2005, message = "이미지파일이 아닙니다")
     })
     @GetMapping("/{userId}")
-    public BaseResponse<List<GetPhotoRes>> getAllPhoto(@PathVariable Long userId){
+    public BaseResponse<?> getAllPhoto(@PathVariable Long userId){
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
         String user = principal.getName();
 
@@ -111,8 +111,9 @@ public class PhotoController {
                 return new BaseResponse<>(INVALID_JWT);
             }
 
-            List<GetPhotoRes> photoList = photoService.getAllImages(userId);
-            return new BaseResponse<>(photoList);
+//            List<GetPhotoRes> photoList = photoService.getAllImages(userId);
+//            return new BaseResponse<>(photoList);
+            return new BaseResponse<>(photoService.getAllImages(userId));
 
         } catch (Exception e){
             e.printStackTrace();
@@ -138,7 +139,7 @@ public class PhotoController {
             @ApiResponse(code = 2007, message = "존재하지 않는 사진입니다.")
     })
     @PostMapping("/like/{photoId}/{userId}")
-    public BaseResponse<PhotoLikeRes> postLike(@PathVariable Long photoId, @PathVariable Long userId) {
+    public BaseResponse<?> postLike(@PathVariable Long photoId, @PathVariable Long userId) {
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
         String user = principal.getName();
 
@@ -182,6 +183,11 @@ public class PhotoController {
     /**
      * 카테고리별 캐릭터 사진 반환 api
      */
+
+//    @GetMapping("/{categoryId}")
+//    public BaseResponse<?> getImageFileList(@PathVariable Long categoryId){
+//
+//    }
 
 
 
