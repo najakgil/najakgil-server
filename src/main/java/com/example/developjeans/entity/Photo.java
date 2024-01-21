@@ -3,6 +3,7 @@ package com.example.developjeans.entity;
 import com.example.developjeans.global.entity.BaseEntity;
 import com.example.developjeans.global.entity.Status;
 
+
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 

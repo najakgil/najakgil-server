@@ -22,7 +22,7 @@ import static com.example.developjeans.global.config.Response.BaseResponseStatus
 @Slf4j
 @Api(tags = "User")
 //@Tag(name = "User", description = "회원 기능")
-@RequestMapping("/users")
+@RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class UserController {
 
@@ -47,8 +47,7 @@ public class UserController {
 
     @ApiOperation("회원 탈퇴 API")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "Authorization", dataTypeClass = String.class, paramType = "header", value = "서비스 자체 jwt 토큰"),
-            @ApiImplicitParam(name = "userId", dataTypeClass = Long.class, paramType = "path", value = "유저 인덱스", example = "1"),
+            @ApiImplicitParam(name = "Authorization", dataTypeClass = String.class, paramType = "header", value = "서비스 자체 jwt 토큰")
     })
     @ApiResponses({
             @ApiResponse(code = 1000, message = "요청에 성공하였습니다.", response = String.class),
@@ -57,8 +56,8 @@ public class UserController {
             @ApiResponse(code = 2004, message = "존재하지 않는 유저입니다.")
     })
     //@Operation(summary = "탈퇴하기", description = "회원 탈퇴 기능입니다.")
-    @DeleteMapping("/{userId}")
-    public BaseResponse<String> deleteUser(@PathVariable Long userId){
+    @DeleteMapping("/withdrawal")
+    public BaseResponse<String> deleteUser(@RequestParam("userId") Long userId){
         log.info("탈퇴 api 실행");
         Authentication principal = SecurityContextHolder.getContext().getAuthentication();
         String user = principal.getName();

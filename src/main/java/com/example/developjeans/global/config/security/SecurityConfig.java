@@ -55,7 +55,7 @@ public class SecurityConfig {
                 .cors().and()
                 .authorizeRequests() //request를 authorize 하겠다는 의미
                 .antMatchers(PERMIT_ALL_PATTERNS).permitAll() //Login, join은 언제든지 가능
-                .anyRequest().authenticated() //모든 POST 인증 요청
+                .anyRequest().authenticated() //모든 api 인증 요청
                 .and()
                 .sessionManagement()
                 // 세션 사용하지 않으므로 STATELESS로 설정
@@ -101,9 +101,6 @@ public class SecurityConfig {
 //                .deleteCookies("remember-me"); // 로그아웃 후 삭제할 쿠키 지정
 //
 
-        //httpSecurity.addFilterBefore(new JwtFilter(secretKey), UsernamePasswordAuthenticationFilter.class);
-
-        //return httpSecurity.build();
 
 
 
