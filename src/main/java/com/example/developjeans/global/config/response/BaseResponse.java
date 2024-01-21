@@ -1,4 +1,4 @@
-package com.example.developjeans.global.config.Response;
+package com.example.developjeans.global.config.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -6,7 +6,7 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Getter;
 import lombok.Setter;
 
-import static com.example.developjeans.global.config.Response.BaseResponseStatus.SUCCESS;
+import static com.example.developjeans.global.config.response.BaseResponseStatus.SUCCESS;
 
 
 @Getter

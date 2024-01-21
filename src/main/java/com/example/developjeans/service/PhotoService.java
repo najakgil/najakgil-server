@@ -1,37 +1,27 @@
 package com.example.developjeans.service;
 
 
-import com.example.developjeans.dto.PhotoCharDto;
 import com.example.developjeans.dto.PhotoDto;
 import com.example.developjeans.dto.response.GetChartRes;
-import com.example.developjeans.dto.response.GetPhotoRes;
-import com.example.developjeans.dto.response.PhotoLikeRes;
-import com.example.developjeans.dto.response.SavePhotoRes;
 import com.example.developjeans.entity.Photo;
 import com.example.developjeans.entity.PhotoLike;
 import com.example.developjeans.entity.User;
-import com.example.developjeans.global.config.Response.BaseException;
-import com.example.developjeans.global.config.Response.BaseResponse;
-import com.example.developjeans.global.config.Response.BaseResponseStatus;
+import com.example.developjeans.global.config.response.BaseException;
+import com.example.developjeans.global.config.response.BaseResponseStatus;
 import com.example.developjeans.global.entity.Status;
 import com.example.developjeans.mapper.PhotoMapper;
 import com.example.developjeans.repository.PhotoLikeRepository;
 import com.example.developjeans.repository.PhotoRepository;
 import com.example.developjeans.repository.UserRepository;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
-
-import javax.persistence.EntityNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;

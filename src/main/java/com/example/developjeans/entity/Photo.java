@@ -4,11 +4,11 @@ import com.example.developjeans.global.entity.BaseEntity;
 import com.example.developjeans.global.entity.Status;
 
 
+import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
 
-import javax.persistence.*;
 
 import static com.example.developjeans.global.entity.Status.D;
 

@@ -1,4 +1,4 @@
-package com.example.developjeans.global.config.Response;
+package com.example.developjeans.global.config.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

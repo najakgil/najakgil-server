@@ -15,7 +15,6 @@ import static org.springframework.web.servlet.function.RouterFunctions.route;
 
 @EnableJpaAuditing
 @SpringBootApplication
-@OpenAPIDefinition
 public class DevelopJeansApplication {
 
     public static void main(String[] args) {
