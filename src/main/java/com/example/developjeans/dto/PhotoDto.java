@@ -1,7 +1,12 @@
 package com.example.developjeans.dto;
 
+import com.example.developjeans.entity.Photo;
 import lombok.*;
+import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class PhotoDto {
 
@@ -73,4 +78,6 @@ public class PhotoDto {
         private Integer likes;
     }
 
-}
+
+
+ }

@@ -1,27 +1,25 @@
-package com.example.developjeans.service;
+package com.example.developjeans.global.config.aws;
 
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.amazonaws.services.s3.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.UUID;
+import java.util.*;
 
 @Slf4j
 @Service
@@ -75,6 +73,35 @@ public class S3Service {
             log.info("파일이 삭제되었습니다.");
         } else {
             log.info("파일이 삭제되지 않았습니다.");
+        }
+    }
+
+    public List<String> getImageList(String categoryName){
+        ListObjectsV2Request req = new ListObjectsV2Request().withBucketName(bucket).withPrefix(categoryName);
+        ListObjectsV2Result result;
+        List<String> imageUriList = new ArrayList<>();
+
+        do {
+            result = amazonS3.listObjectsV2(req);
+
+            for (S3ObjectSummary objectSummary : result.getObjectSummaries()) {
+                String fileName = objectSummary.getKey();
+                if (!fileName.endsWith(".DS_Store")) {
+                    imageUriList.add(getFile(fileName));
+                }
+            }
+            String token = result.getNextContinuationToken();
+            req.setContinuationToken(token);
+        } while(result.isTruncated());
+
+        return imageUriList;
+    }
+
+    public String getFile(String fileName) {
+        try{
+            return amazonS3.getUrl(bucket, fileName).toString();
+        }catch (Exception e){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "파일이 없습니다");
         }
     }
 }
