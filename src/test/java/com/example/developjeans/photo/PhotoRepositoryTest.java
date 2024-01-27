@@ -29,7 +29,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@ActiveProfiles("local")
+//@ActiveProfiles("local")
 public class PhotoRepositoryTest {
 
     @Autowired

@@ -7,7 +7,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @SpringBootTest
 @WebAppConfiguration
-@ActiveProfiles("local")
+//@ActiveProfiles("local")
 class DevelopJeansApplicationTests {
 
     @Test
