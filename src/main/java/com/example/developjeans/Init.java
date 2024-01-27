@@ -28,7 +28,7 @@ public class Init {
 
     @PostConstruct
     private void initFirst(){
-        initUsers();
+//        initUsers();
         initPhotos();
 
     }

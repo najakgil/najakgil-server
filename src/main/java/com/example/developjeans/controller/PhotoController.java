@@ -65,14 +65,25 @@ public class PhotoController {
 
 
     }
-    @Operation(summary = "사진 차트", description = "홈에 있는 사진 차트 기능입니다.")
-    @GetMapping("/chart")
-    public ResponseEntity<?> getChartLikes(@RequestParam String standard,
-                                           @RequestParam(name = "size") int size){
+//    @Operation(summary = "사진 차트", description = "홈에 있는 사진 차트 기능입니다.")
+//    @GetMapping("/chart")
+//    public ResponseEntity<?> getChartLikes(@RequestParam String standard,
+//                                           @RequestParam(name = "size") int size){
+//
+//        return ResponseEntity.ok(photoService.getChart(standard, size));
+//
+//    }
 
-        return ResponseEntity.ok(photoService.getChart(standard, size));
+    @Operation(summary = "사진 차트", description = "likes: 인기순, latest: 최신순")
+    @GetMapping("/chart")
+    public ResponseEntity<?> getChartLikes(@RequestParam String sort,
+                                           @RequestParam(name = "size") int size,
+                                           @RequestParam Long lastPhotoId){
+
+        return ResponseEntity.ok(photoService.getChart(sort, size, lastPhotoId));
 
     }
+
 
 //    @Operation(summary = "사진 차트", description = "모든 사진을 모아볼 수 있는 기능입니다.")
 //    @GetMapping("/chart")

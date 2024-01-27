@@ -4,6 +4,7 @@ package com.example.developjeans.service;
 import com.example.developjeans.dto.PhotoDto;
 
 
+
 import com.example.developjeans.entity.Photo;
 import com.example.developjeans.entity.PhotoLike;
 import com.example.developjeans.entity.User;
@@ -17,18 +18,14 @@ import com.example.developjeans.repository.PhotoLikeRepository;
 import com.example.developjeans.repository.PhotoRepository;
 import com.example.developjeans.repository.UserRepository;
 
-import io.swagger.v3.oas.annotations.Operation;
+import com.example.developjeans.entity.res.GetChartResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,36 +222,46 @@ public class PhotoService {
 
     }
 
-//    @Transactional(readOnly = true)
-//    public Page<> getChart(String standard, int size, Long lastPageId) {
-//
-//        PageRequest pageRequest = PageRequest.of(0, size + 1);
-//        Page<Photo> page = photoRepository.findAllByOrderByCreatedAtDesc(lastPageId, pageRequest);
-//        List<Photo> photos = page.getContent();
-//
-//        ScrollPaginationCollection<Photo> photoCursor = ScrollPaginationCollection.of(photos, size);
-//        GetChartRes getChartRes = G
-//
-//
-//    }
-
     @Transactional(readOnly = true)
-    public List<PhotoDto.PhotoChartDto> getChart(String standard, int size){
+    public GetChartResponse getChart(String sort, int size, Long lastPageId) {
+        // 페이지 요청 객체 생성
+        PageRequest pageRequest = PageRequest.of(0, size + 1);
 
-        if(standard.equals("likes")){
-            Slice<Photo> findPhotoLikes = photoRepository.findAllByOrderByLikesDesc(PageRequest.of(0, size));
-            return createList(findPhotoLikes);
-        }
-        else if(standard.equals("latest")){
-            Slice<Photo> findPhotoLatest = photoRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, size));
-            return createList(findPhotoLatest);
+        Page<Photo> page;
+        if ("likes".equals(sort) || "latest".equals(sort)) {
+            // 정렬 기준에 따라 쿼리 실행
+            page = "likes".equals(sort) ?
+                    photoRepository.findAllByOrderByLikesDesc(lastPageId, pageRequest) :
+                    photoRepository.findAllByOrderByCreatedAtDesc(lastPageId,pageRequest);
         } else {
+            // 유효하지 않은 sort값이 온 경우 예외 처리
             throw new BusinessLogicException(ExceptionCode.INVALID_SORT);
         }
 
-
-
+        // 페이지의 내용과 전체 엔티티 수를 사용하여 응답 생성
+        List<Photo> photos = page.getContent();
+        ScrollPaginationCollection<Photo> photoCursor = ScrollPaginationCollection.of(photos, size);
+        long totalElements = photoRepository.count();
+        return GetChartResponse.of(photoCursor, totalElements);
     }
+
+//    @Transactional(readOnly = true)
+//    public List<PhotoDto.PhotoChartDto> getChart(String standard, int size){
+//
+//        if(standard.equals("likes")){
+//            Slice<Photo> findPhotoLikes = photoRepository.findAllByOrderByLikesDesc(PageRequest.of(0, size));
+//            return createList(findPhotoLikes);
+//        }
+//        else if(standard.equals("latest")){
+//            Slice<Photo> findPhotoLatest = photoRepository.findAllByOrderByCreatedAtDesc(PageRequest.of(0, size));
+//            return createList(findPhotoLatest);
+//        } else {
+//            throw new BusinessLogicException(ExceptionCode.INVALID_SORT);
+//        }
+//
+//
+//
+//    }
 
     public static List<PhotoDto.PhotoChartDto> createList(Slice<Photo> photos){
         // page를 list로 변환

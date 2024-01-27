@@ -65,11 +65,12 @@ public class PhotoRepositoryTest {
     public void 사진_차트_불러오기_성공(){
         // given
         Photo photo = testPhoto();
-        Pageable pageable = PageRequest.of(0, 3);
+//        Pageable pageable = PageRequest.of(0, 3);
+        Long lastPage = 5l;
 
         // when
 //        Page<Photo> findPhotoChart = photoRepository.findAllByOrderByLikesDesc(pageable);
-        Slice<Photo> findPhotoChart = photoRepository.findAllByOrderByCreatedAtDesc(pageable);
+        Slice<Photo> findPhotoChart = photoRepository.findAllByOrderByCreatedAtDesc(lastPage, PageRequest.of(0, 3));
 
         // then
         assertEquals(findPhotoChart.getSize(), 3); // 객체가 일치하는지 확인

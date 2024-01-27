@@ -20,17 +20,25 @@ public interface PhotoRepository extends JpaRepository<Photo, Long> {
     @Override
     List<Photo> findAll(Sort sort);
 
+    long count();
+
     List<Photo> findByUserId(Long userId);
 
 //    @Query("select new com.example.developjeans.dto.response.GetChartRes(p.id, p.imgUrl, p.likes) from Photo p ")
 //    Page<GetChartRes> findAllByOrderByLikesDesc(Pageable pageable);
 
+    @Query("SELECT p FROM Photo p WHERE p.id < :lastPageId ORDER BY p.createdAt DESC")
     Page<Photo> findAllByOrderByCreatedAtDesc(Long lastPageId, PageRequest pageRequest);
 
-//    Page<Photo> findAllByOrderByCreatedAtDesc(Pageable pageable);
-    Slice<Photo> findAllByOrderByCreatedAtDesc(Pageable pageable);
+    @Query("SELECT p FROM Photo p WHERE p.id < :lastPageId ORDER BY p.likes DESC")
+    Page<Photo> findAllByOrderByLikesDesc(Long lastPageId, PageRequest pageRequest);
 
-    Slice<Photo> findAllByOrderByLikesDesc(Pageable pageable);
+
+
+//    Page<Photo> findAllByOrderByCreatedAtDesc(Pageable pageable);
+//    Slice<Photo> findAllByOrderByCreatedAtDesc(Pageable pageable);
+//
+//    Slice<Photo> findAllByOrderByLikesDesc(Pageable pageable);
 
     void deleteAllByUserId(Long userId);
 }
