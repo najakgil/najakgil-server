@@ -77,7 +77,8 @@ public class SecurityConfig {
                         .requestMatchers(new MvcRequestMatcher(introspector, "/swagger-ui/**")).permitAll()
                         .requestMatchers(new MvcRequestMatcher(introspector, "/v3/api-docs/**")).permitAll()
                         .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/photo/chart")).permitAll()
-                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/categories/**")).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/photo/detail")).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/photo/download")).permitAll()
                         // 나머지는 시큐리티 적용
                         .anyRequest().authenticated()
 

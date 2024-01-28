@@ -4,10 +4,15 @@ import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
+import com.amazonaws.util.IOUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,9 +22,12 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
+
+import static org.springframework.web.servlet.function.RequestPredicates.contentType;
 
 @Slf4j
 @Service
@@ -102,6 +110,39 @@ public class S3Service {
             return amazonS3.getUrl(bucket, fileName).toString();
         }catch (Exception e){
             throw new ResponseStatusException(HttpStatus.FORBIDDEN, "파일이 없습니다");
+        }
+    }
+
+    public ResponseEntity<byte[]> download(String fileUrl) throws IOException { // 객체 다운  fileUrl : 폴더명/파일네임.파일확장자
+
+        S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucket, fileUrl));
+        S3ObjectInputStream objectInputStream = s3Object.getObjectContent();
+        byte[] bytes = IOUtils.toByteArray(objectInputStream);
+
+        HttpHeaders httpHeaders = new HttpHeaders();
+        httpHeaders.setContentType(contentType(fileUrl));
+        httpHeaders.setContentLength(bytes.length);
+
+        String[] arr = fileUrl.split("/");
+        String type = arr[arr.length - 1];
+        String fileName = URLEncoder.encode(type, "UTF-8").replaceAll("\\+", "%20");
+        httpHeaders.setContentDispositionFormData("attachment", fileName); // 파일이름 지정
+
+        return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
+    }
+
+    private MediaType contentType(String keyname) {
+        String[] arr = keyname.split("\\.");
+        String type = arr[arr.length - 1];
+        switch (type) {
+            case "txt":
+                return MediaType.TEXT_PLAIN;
+            case "png":
+                return MediaType.IMAGE_PNG;
+            case "jpg":
+                return MediaType.IMAGE_JPEG;
+            default:
+                return MediaType.APPLICATION_OCTET_STREAM;
         }
     }
 }
