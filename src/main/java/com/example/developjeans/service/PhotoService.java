@@ -21,12 +21,17 @@ import com.example.developjeans.repository.UserRepository;
 import com.example.developjeans.entity.res.GetChartResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -245,6 +250,20 @@ public class PhotoService {
         return GetChartResponse.of(photoCursor, totalElements);
     }
 
+    public PhotoDto.PhotoResponseDto getDetail(Long photoId){
+
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 사진 ID: " + photoId));
+
+        return photoMapper.toResponseDto(photo);
+
+    }
+
+    public ResponseEntity<byte[]> downloadImage(Long photoId) throws IOException {
+        Photo photo = photoRepository.findById(photoId)
+                .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 사진 ID: " + photoId));
+        return s3Service.download(photo.getImgUrl());
+    }
 //    @Transactional(readOnly = true)
 //    public List<PhotoDto.PhotoChartDto> getChart(String standard, int size){
 //

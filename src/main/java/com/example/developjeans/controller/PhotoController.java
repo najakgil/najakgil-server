@@ -1,13 +1,17 @@
 package com.example.developjeans.controller;
 import com.example.developjeans.exception.BusinessLogicException;
 import com.example.developjeans.exception.ExceptionCode;
+import com.example.developjeans.global.config.aws.S3Service;
 import com.example.developjeans.service.PhotoService;
 import com.fasterxml.jackson.databind.ser.Serializers;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.UrlResource;
 import org.springframework.data.domain.Page;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -15,6 +19,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 
 @RestController
@@ -82,6 +88,20 @@ public class PhotoController {
 
         return ResponseEntity.ok(photoService.getChart(sort, size, lastPhotoId));
 
+    }
+
+
+
+    @Operation(summary = "사진 상세 조회")
+    @GetMapping("/detail")
+    public ResponseEntity<?> getPhotoDetail(@RequestParam Long photoId){
+        return ResponseEntity.ok(photoService.getDetail(photoId));
+    }
+
+    @Operation(summary = "사진 다운로드")
+    @GetMapping("/download")
+    public ResponseEntity<?> downloadImage(@RequestParam Long photoId) throws IOException {
+        return ResponseEntity.ok(photoService.downloadImage(photoId));
     }
 
 
