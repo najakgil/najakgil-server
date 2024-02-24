@@ -21,6 +21,7 @@ import com.example.developjeans.repository.UserRepository;
 import com.example.developjeans.entity.res.GetChartResponse;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.Resource;
 import org.springframework.data.domain.*;
@@ -40,6 +41,7 @@ import java.util.Optional;
 @Service
 @Transactional
 @RequiredArgsConstructor
+@Slf4j
 public class PhotoService {
 
     private final PhotoRepository photoRepository;
@@ -262,6 +264,8 @@ public class PhotoService {
     public ResponseEntity<byte[]> downloadImage(Long photoId) throws IOException {
         Photo photo = photoRepository.findById(photoId)
                 .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 사진 ID: " + photoId));
+        log.info("사진 url: " + photo.getImgUrl());
+
         return s3Service.download(photo.getImgUrl());
     }
 //    @Transactional(readOnly = true)
