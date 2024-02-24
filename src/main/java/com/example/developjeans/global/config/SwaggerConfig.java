@@ -4,6 +4,7 @@ import io.swagger.v3.oas.annotations.OpenAPIDefinition;
 
 
 import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.servers.Server;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
@@ -22,6 +23,7 @@ import java.util.Arrays;
 
 @Configuration
 @OpenAPIDefinition(
+        servers = {@Server(url = "https://najakgil.shop", description = "나작길 api 명세서")},
         info = @Info(title = "나작길",
                 description = "나작길 api명세서",
                 version = "v1"))
