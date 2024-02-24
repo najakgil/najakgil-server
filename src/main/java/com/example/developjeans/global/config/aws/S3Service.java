@@ -22,12 +22,14 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import static org.springframework.web.servlet.function.RequestPredicates.contentType;
+
 
 @Slf4j
 @Service
@@ -115,7 +117,12 @@ public class S3Service {
 
     public ResponseEntity<byte[]> download(String fileUrl) throws IOException { // 객체 다운  fileUrl : 폴더명/파일네임.파일확장자
 
-        S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucket, fileUrl));
+        // 파일의 경로와 파일명을 추출
+        String[] urlParts = fileUrl.split("/");
+        String key = String.join("/", Arrays.copyOfRange(urlParts, 3, urlParts.length)); // 버킷명 다음의 경로부터가 키
+        log.info("key = " + key);
+
+        S3Object s3Object = amazonS3.getObject(new GetObjectRequest(bucket, key));
         S3ObjectInputStream objectInputStream = s3Object.getObjectContent();
         byte[] bytes = IOUtils.toByteArray(objectInputStream);
 
@@ -123,9 +130,10 @@ public class S3Service {
         httpHeaders.setContentType(contentType(fileUrl));
         httpHeaders.setContentLength(bytes.length);
 
-        String[] arr = fileUrl.split("/");
-        String type = arr[arr.length - 1];
-        String fileName = URLEncoder.encode(type, "UTF-8").replaceAll("\\+", "%20");
+        // 파일명 추출 및 인코딩
+        String fileName = urlParts[urlParts.length - 1];
+        fileName = URLEncoder.encode(fileName, "UTF-8");
+        log.info("fileName = " + fileName);
         httpHeaders.setContentDispositionFormData("attachment", fileName); // 파일이름 지정
 
         return new ResponseEntity<>(bytes, httpHeaders, HttpStatus.OK);
@@ -134,6 +142,7 @@ public class S3Service {
     private MediaType contentType(String keyname) {
         String[] arr = keyname.split("\\.");
         String type = arr[arr.length - 1];
+        log.info("type = " + type);
         switch (type) {
             case "txt":
                 return MediaType.TEXT_PLAIN;
@@ -145,6 +154,7 @@ public class S3Service {
                 return MediaType.APPLICATION_OCTET_STREAM;
         }
     }
+
 }
 /*
 @Service

@@ -1,6 +1,7 @@
 package com.example.developjeans.dto;
 
 import com.example.developjeans.entity.Photo;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.*;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
@@ -8,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 
+@Schema(description = "사진 Response")
 public class PhotoDto {
 
     @Getter
