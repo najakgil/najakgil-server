@@ -23,7 +23,7 @@ import java.util.Arrays;
 
 @Configuration
 @OpenAPIDefinition(
-        servers = {@Server(url = "https://najakgil.shop", description = "나작길 api 명세서")},
+//        servers = {@Server(url = "https://najakgil.shop", description = "나작길 api 명세서")},
         info = @Info(title = "나작길",
                 description = "나작길 api명세서",
                 version = "v1"))

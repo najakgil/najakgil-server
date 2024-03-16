@@ -5,6 +5,7 @@ import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.*;
 import com.amazonaws.util.IOUtils;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -34,6 +35,7 @@ import static org.springframework.web.servlet.function.RequestPredicates.content
 @Slf4j
 @Service
 @Transactional
+@Tag(name = "배경화면")
 @RequiredArgsConstructor
 public class S3Service {
     @Value("${cloud.aws.s3.bucket}")

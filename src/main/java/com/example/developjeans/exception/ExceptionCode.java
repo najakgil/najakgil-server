@@ -42,6 +42,7 @@ public enum ExceptionCode {
      * 404 NOT_FOUND : 해당 Resources 찾을 수 없음
      */
     USER_NOT_FOUND(NOT_FOUND, "해당 유저 정보를 찾을 수 없습니다"),
+    COMMENT_NOT_FOUND(NOT_FOUND, "해당 댓글 정보를 찾을 수 없습니다"),
     REFRESH_TOKEN_NOT_FOUND(NOT_FOUND, "로그아웃 된 사용자 입니다"),
     FILE_IS_NOT_EXIST(NOT_FOUND, "해당 파일이 존재하지 않습니다"),
     IMAGE_IS_NOT_EXIST(NOT_FOUND, "해당 이미지가 존재하지 않습니다"),
