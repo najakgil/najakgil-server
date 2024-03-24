@@ -30,10 +30,35 @@ public class CommentDto {
 
         private LocalDateTime createdAt;
 
-        private Integer likes_cnt;
+        private int likes_cnt;
 
-        private Integer declaration;
+        private int declaration;
 
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class CommentLikeResponseDto{
+
+        private int likes_cnt;
+
+        private String message;
+
+    }
+
+    @Getter
+    @Setter
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @Builder
+    public static class CommentBlameDto{
+
+        private int declaration;
+
+        private String message;
     }
 
 }

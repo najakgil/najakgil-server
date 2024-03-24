@@ -23,9 +23,9 @@ public class Comment extends BaseEntity {
 
     private String content;
 
-    private Integer likes_cnt;
+    private int likes_cnt;
 
-    private Integer declaration;
+    private int declaration;
 
     @Enumerated(EnumType.STRING)
     private Status status;

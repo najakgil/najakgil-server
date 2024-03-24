@@ -80,7 +80,7 @@ public class SecurityConfig {
                         .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/photo/detail")).permitAll()
                         .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/photo/download")).permitAll()
                         .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/comment/**")).permitAll()
-                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/wallpapers")).permitAll()
+                        .requestMatchers(new MvcRequestMatcher(introspector, "/api/v1/image")).permitAll()
                         // 나머지는 시큐리티 적용
                         .anyRequest().authenticated()
 

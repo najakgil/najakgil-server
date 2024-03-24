@@ -30,7 +30,7 @@ public class CommentService {
     private final CommentMapper commentMapper;
 
     @Transactional
-    public Long createComment(String content){
+    public long createComment(String content){
 
         Comment comment = Comment.builder()
                 .content(content)
@@ -68,17 +68,17 @@ public class CommentService {
     }
 
     @Transactional
-    public Integer createLikes(Long commentId){
+    public CommentDto.CommentLikeResponseDto createLikes(Long commentId){
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
 
         comment.like(comment, comment.getLikes_cnt());
-        return comment.getLikes_cnt();
+        return new CommentDto.CommentLikeResponseDto(comment.getLikes_cnt(), "좋아요 성공");
     }
 
     @Transactional
-    public Integer deleteLikes(Long commentId){
+    public CommentDto.CommentLikeResponseDto deleteLikes(Long commentId){
 
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
@@ -86,38 +86,42 @@ public class CommentService {
         comment.unlike(comment, comment.getLikes_cnt());
 
         if(comment.getLikes_cnt() < 0){
-            return 0;
+            return new CommentDto.CommentLikeResponseDto(0, "좋아요는 음수가 될 수 없습니다.");
         }
 
-        return comment.getLikes_cnt();
+        return new CommentDto.CommentLikeResponseDto(comment.getLikes_cnt(), "좋아요 취소 완료");
     }
 
     @Transactional
-    public Integer createReports(Long commentId){
+    public CommentDto.CommentBlameDto createReports(Long commentId){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
 
         comment.reports(comment, comment.getDeclaration());
 
-        if(comment.getDeclaration() > 8){
+        if(comment.getDeclaration() > 9){
             commentRepository.delete(comment);
-            return -1;
+            String message = "신고 횟수 10회로 댓글이 삭제되었습니다.";
+            return new CommentDto.CommentBlameDto(0, message);
         }
 
-        return comment.getDeclaration();
+        String message = "신고가 완료되었습니다.";
+
+        return new CommentDto.CommentBlameDto(comment.getDeclaration(), message);
     }
 
     @Transactional
-    public Integer deleteReports(Long commentId){
+    public CommentDto.CommentBlameDto deleteReports(Long commentId){
         Comment comment = commentRepository.findById(commentId)
                 .orElseThrow(() -> new BusinessLogicException(ExceptionCode.COMMENT_NOT_FOUND));
 
         comment.unreports(comment, comment.getDeclaration());
 
         if(comment.getDeclaration() < 0){
-            return 0;
+            String message = "신고 횟수 0";
+            return new CommentDto.CommentBlameDto(0, message);
         }
 
-        return comment.getDeclaration();
+        return new CommentDto.CommentBlameDto(comment.getDeclaration(), "신고가 취소되었습니다.");
     }
 }
