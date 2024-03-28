@@ -32,14 +32,14 @@ public class GetChartResponse {
     }
 
     public static GetChartResponse of(ScrollPaginationCollection<Photo> photoScroll, long totalElements) {
-        GetChartResponse GetChartResponse;
+        GetChartResponse response;
         if (photoScroll.isLastScroll()) {
-            GetChartResponse = newLastScroll(photoScroll.getCurrentScrollItems(), totalElements);
+            response = newLastScroll(photoScroll.getCurrentScrollItems(), totalElements);
         } else {
-            GetChartResponse = newScrollHasNext(photoScroll.getCurrentScrollItems(), totalElements, photoScroll.getNextCursor().getId());
+            response = newScrollHasNext(photoScroll.getCurrentScrollItems(), totalElements, photoScroll.getNextCursor().getId());
         }
 
-        return GetChartResponse;
+        return response;
     }
 
     private static GetChartResponse newLastScroll(List<Photo> photoScroll, long totalElements) {
@@ -51,6 +51,9 @@ public class GetChartResponse {
         return new GetChartResponse(getContents(photoScroll), totalElements, nextCursor);
     }
 
+    /**
+     * 조회한 데이터를 클라이언트에게 전달할 데이터로 가공
+     */
     private static List<PhotoDto.PhotoChartDto> getContents(List<Photo> photoScroll) {
         return photoScroll.stream()
                 .map(feed -> new PhotoDto.PhotoChartDto(feed.getId(), feed.getImgUrl(), feed.getLikes()))

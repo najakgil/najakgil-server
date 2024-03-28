@@ -193,18 +193,9 @@ public class PhotoService {
                 photoLikeRepository.delete(photoLike);
                 photo.setLikes(photo.getLikes() - 1);
                 String message = "좋아요 취소";
-//            return new PhotoLikeRes(photoId, photo.getLikes(), message);
                 PhotoDto.PhotoResponseDto photoResponseDto = photoMapper.toResponseDto(photo);
                 return new PhotoDto.PhotoLikeDto(photoResponseDto.getId(), photoResponseDto.getLikes(), message);
             }
-
-        /*
-        if(photoLikeRepository.existsByPhotoAndUserAndStatus(photo, user, Status.A)) {
-            photoLikeRepository.deleteById(photo);
-            photo.setLikes(photo.getLikes() - 1);
-            System.out.println("좋아요가 취소되었습니다.");
-            return new PhotoLikeRes(photoId, photo.getLikes());
-        } */
 
             PhotoLike photoLike = PhotoLike
                     .builder()
@@ -219,13 +210,9 @@ public class PhotoService {
             String message = "좋아요";
             PhotoDto.PhotoResponseDto photoResponseDto = photoMapper.toResponseDto(photo);
             return new PhotoDto.PhotoLikeDto(photoResponseDto.getId(), photoResponseDto.getLikes(), message);
-//        return new PhotoLikeRes(photoId, photo.getLikes(), message);
         } catch (Exception e){
             throw new BusinessLogicException(ExceptionCode.DATABASE_ERROR);
         }
-
-
-
 
     }
 
