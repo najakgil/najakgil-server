@@ -56,7 +56,7 @@ public class GetChartResponse {
      */
     private static List<PhotoDto.PhotoChartDto> getContents(List<Photo> photoScroll) {
         return photoScroll.stream()
-                .map(feed -> new PhotoDto.PhotoChartDto(feed.getId(), feed.getImgUrl(), feed.getLikes()))
+                .map(photo -> new PhotoDto.PhotoChartDto(photo.getId(), photo.getImgUrl(), photo.getLikes()))
                 .collect(Collectors.toList());
     }
 
