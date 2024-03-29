@@ -176,14 +176,14 @@ public class PhotoService {
                 throw new BusinessLogicException(ExceptionCode.INVALID_USER_JWT);
             }
 
-            User _user = userRepository.findById(userId)
+            User user = userRepository.findById(userId)
                     .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 유저 ID: " + userId));
 
             Photo photo = photoRepository.findById(photoId)
                     .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 사진 ID: " + photoId));
 
 
-            Optional<PhotoLike> optionalLike = photoLikeRepository.findByPhotoAndUser(photo, _user);
+            Optional<PhotoLike> optionalLike = photoLikeRepository.findByPhotoAndUser(photo, user);
 
             if(optionalLike.isPresent()){
                 PhotoLike photoLike = optionalLike.get();
@@ -196,7 +196,7 @@ public class PhotoService {
 
             PhotoLike photoLike = PhotoLike
                     .builder()
-                    .user(_user)
+                    .user(user)
                     .photo(photo)
                     .status(Status.A)
                     .build();
