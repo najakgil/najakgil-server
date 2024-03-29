@@ -182,11 +182,8 @@ public class PhotoService {
             Photo photo = photoRepository.findById(photoId)
                     .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 사진 ID: " + photoId));
 
-            User user = User.builder()
-                    .id(userId)
-                    .build();
 
-            Optional<PhotoLike> optionalLike = photoLikeRepository.findByPhotoAndUser(photo, user);
+            Optional<PhotoLike> optionalLike = photoLikeRepository.findByPhotoAndUser(photo, _user);
 
             if(optionalLike.isPresent()){
                 PhotoLike photoLike = optionalLike.get();
@@ -199,7 +196,7 @@ public class PhotoService {
 
             PhotoLike photoLike = PhotoLike
                     .builder()
-                    .user(user)
+                    .user(_user)
                     .photo(photo)
                     .status(Status.A)
                     .build();
