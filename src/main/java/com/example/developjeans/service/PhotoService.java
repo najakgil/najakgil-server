@@ -214,7 +214,7 @@ public class PhotoService {
     }
 
     @Transactional(readOnly = true)
-    public GetChartResponse getChart(String sort, int size, Long lastPageId) {
+    public GetChartResponse getChart(String sort, int size, Long lastPhotoId) {
         // 페이지 요청 객체 생성
         PageRequest pageRequest = PageRequest.of(0, size + 1);
 
@@ -222,8 +222,8 @@ public class PhotoService {
         if ("likes".equals(sort) || "latest".equals(sort)) {
             // 정렬 기준에 따라 쿼리 실행
             page = "likes".equals(sort) ?
-                    photoRepository.findAllByOrderByLikesDesc(lastPageId, pageRequest) :
-                    photoRepository.findAllByOrderByCreatedAtDesc(lastPageId,pageRequest);
+                    photoRepository.findAllByOrderByLikesDesc(lastPhotoId, pageRequest) :
+                    photoRepository.findAllByOrderByCreatedAtDesc(lastPhotoId,pageRequest);
         } else {
             // 유효하지 않은 sort값이 온 경우 예외 처리
             throw new BusinessLogicException(ExceptionCode.INVALID_SORT);
