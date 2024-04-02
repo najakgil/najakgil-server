@@ -176,15 +176,12 @@ public class PhotoService {
                 throw new BusinessLogicException(ExceptionCode.INVALID_USER_JWT);
             }
 
-            User _user = userRepository.findById(userId)
+            User user = userRepository.findById(userId)
                     .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 유저 ID: " + userId));
 
             Photo photo = photoRepository.findById(photoId)
                     .orElseThrow(() -> new EntityNotFoundException("존재하지 않은 사진 ID: " + photoId));
 
-            User user = User.builder()
-                    .id(userId)
-                    .build();
 
             Optional<PhotoLike> optionalLike = photoLikeRepository.findByPhotoAndUser(photo, user);
 
@@ -193,18 +190,9 @@ public class PhotoService {
                 photoLikeRepository.delete(photoLike);
                 photo.setLikes(photo.getLikes() - 1);
                 String message = "좋아요 취소";
-//            return new PhotoLikeRes(photoId, photo.getLikes(), message);
                 PhotoDto.PhotoResponseDto photoResponseDto = photoMapper.toResponseDto(photo);
                 return new PhotoDto.PhotoLikeDto(photoResponseDto.getId(), photoResponseDto.getLikes(), message);
             }
-
-        /*
-        if(photoLikeRepository.existsByPhotoAndUserAndStatus(photo, user, Status.A)) {
-            photoLikeRepository.deleteById(photo);
-            photo.setLikes(photo.getLikes() - 1);
-            System.out.println("좋아요가 취소되었습니다.");
-            return new PhotoLikeRes(photoId, photo.getLikes());
-        } */
 
             PhotoLike photoLike = PhotoLike
                     .builder()
@@ -219,18 +207,14 @@ public class PhotoService {
             String message = "좋아요";
             PhotoDto.PhotoResponseDto photoResponseDto = photoMapper.toResponseDto(photo);
             return new PhotoDto.PhotoLikeDto(photoResponseDto.getId(), photoResponseDto.getLikes(), message);
-//        return new PhotoLikeRes(photoId, photo.getLikes(), message);
         } catch (Exception e){
             throw new BusinessLogicException(ExceptionCode.DATABASE_ERROR);
         }
 
-
-
-
     }
 
     @Transactional(readOnly = true)
-    public GetChartResponse getChart(String sort, int size, Long lastPageId) {
+    public GetChartResponse getChart(String sort, int size, Long lastPhotoId) {
         // 페이지 요청 객체 생성
         PageRequest pageRequest = PageRequest.of(0, size + 1);
 
@@ -238,8 +222,8 @@ public class PhotoService {
         if ("likes".equals(sort) || "latest".equals(sort)) {
             // 정렬 기준에 따라 쿼리 실행
             page = "likes".equals(sort) ?
-                    photoRepository.findAllByOrderByLikesDesc(lastPageId, pageRequest) :
-                    photoRepository.findAllByOrderByCreatedAtDesc(lastPageId,pageRequest);
+                    photoRepository.findAllByOrderByLikesDesc(lastPhotoId, pageRequest) :
+                    photoRepository.findAllByOrderByCreatedAtDesc(lastPhotoId,pageRequest);
         } else {
             // 유효하지 않은 sort값이 온 경우 예외 처리
             throw new BusinessLogicException(ExceptionCode.INVALID_SORT);
